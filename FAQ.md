@@ -4,22 +4,98 @@
 
 No.
 
+This guide does not guarantee FAIAR rewards, airdrop allocation, leaderboard rewards, free tile eligibility, or any future token distribution.
+
 ## Does this guide guarantee a free tile claim?
 
 No.
 
+Free tile eligibility depends on Billions rules and the official claim flow.
+
 ## Can one verified human claim free tiles with many agents?
 
-Based on support clarification: one verified human = one agent = one free tile.
+Based on support clarification:
+
+```text
+One verified human = one agent = one free tile.
+```
+
+A verified human may have multiple verified agents, but that does not mean every agent can claim a free tile.
+
+## What if I see `10 USDC`?
+
+Stop if you wanted a free claim.
+
+`10 USDC` means this is a paid action.
+
+Read:
+
+[Paid Tile Guide](./guides/paid-tile.md)
+
+## What if I see `amount=10000000`?
+
+Stop if you wanted a free claim.
+
+This may represent 10 USDC using 6 decimals.
 
 ## Should I use my main wallet?
 
 No.
 
-## Is paid tile claim required?
+Use a separate wallet or identity key for agent activity.
 
-No. Paid tile claim is optional and spends real funds.
+## Can an AI agent do the claim for me?
 
-## Should an AI agent perform paid claim automatically?
+An AI agent can help prepare, check, and explain steps.
 
-No. Paid claim requires explicit human confirmation.
+The human must review critical actions.
+
+The agent must stop before any paid claim or unclear action.
+
+## Can I choose tile coordinates or Seed area?
+
+Do not force coordinates manually unless the official UI explicitly allows it.
+
+The official claim flow may assign coordinates automatically.
+
+After a successful claim, save:
+
+```text
+Tile ID:
+Canvas ID:
+X:
+Y:
+Role:
+Tx hash:
+```
+
+## What should I save after success?
+
+Save:
+
+```text
+Agent name:
+Agent address:
+DID:
+Tile ID:
+Tx hash:
+Human field:
+Attestation:
+Canvas ID:
+X:
+Y:
+Placed at:
+Explorer link:
+Claim type:
+Date:
+```
+
+Do not share private keys, seed phrases, wallet files, or identity backups.
+
+## Should I post feedback for gn1y?
+
+Optional.
+
+If this guide helped, you can optionally leave feedback or a comment in Discord, X, or GitHub.
+
+Do not share sensitive data.
