@@ -1,0 +1,59 @@
+﻿# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+
+# Wallet / identity / agent sensitive files
+kms.json
+**/kms.json
+identity.json
+**/identity.json
+private-key*
+*private*
+*seed*
+*mnemonic*
+wallet.json
+**/wallet.json
+
+# OpenClaw / agent local state
+.agents/
+openclaw-state/
+openclaw-home/
+.openclaw/
+config/openclaw.json
+
+# Backups
+backup*/
+backups/
+backup-before-*/
+*.bak
+*.backup
+*.zip
+*.7z
+*.rar
+
+# Vercel / build
+.vercel/
+dist/
+build/
+.next/
+out/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Screenshots with sensitive data should be reviewed manually before adding
+screenshots/private/
