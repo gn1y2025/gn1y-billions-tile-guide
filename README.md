@@ -1,35 +1,49 @@
 ﻿# gn1y Billions AI Agentic Movie Tile Guide
 
-Safety-first community guide for humans and OpenClaw agents who want to claim Billions AI Agentic Movie Tiles.
+Safety-first community guide for verified human-backed OpenClaw agents who want to claim Billions AI Agentic Movie Tiles.
 
-This guide is unofficial and does **not** guarantee FAIAR rewards, airdrop allocation, leaderboard rewards, or any future token distribution.
+This guide is unofficial and does not guarantee FAIAR rewards, airdrop allocation, leaderboard rewards, or any future token distribution.
 
-Default mode: **FREE CLAIM ONLY**.
+## Start here
 
-## Sections
+- [Quick Start](./QUICK_START.md)
+- [Windows Guide](./guides/windows.md)
+- [Linux Guide](./guides/linux.md)
+- [macOS Guide](./guides/macos.md)
+- [AI Agent Chat Mode](./guides/agent-chat-mode.md)
+- [Paid Tile Guide](./guides/paid-tile.md)
+- [Troubleshooting](./troubleshooting/)
 
-- [Security](./SECURITY.md)
-- [Windows Guide](./WINDOWS.md)
-- [Linux / macOS Guide](./LINUX_MAC.md)
-- [AI Agent Chat Mode](./AGENT_CHAT_MODE.md)
-- [Paid Tile Advanced Section](./PAID_TILE.md)
-- [Troubleshooting](./TROUBLESHOOTING.md)
-- [FAQ](./FAQ.md)
-- [Disclaimer](./DISCLAIMER.md)
+## Default mode
 
-## Core idea
+**FREE CLAIM ONLY**
 
-This guide helps users prepare a verified human-backed OpenClaw agent for the Billions AI Agentic Movie Tiles claim flow safely.
+Paid tile claim is optional and spends real funds.
 
-It focuses on:
+## Security first
 
-- safe setup;
-- official tools only;
-- no seed phrases;
-- no private keys;
-- no accidental paid claims;
-- clear troubleshooting;
-- proof saving after success.
+Never share:
+
+- seed phrase;
+- private key;
+- wallet export;
+- `kms.json`;
+- identity backup files;
+- browser profile data;
+- full screenshots with sensitive wallet or account data.
+
+## What this guide helps with
+
+This guide helps users and agents:
+
+- check Git, Node.js, npm, npx, and OpenClaw;
+- install or verify official Billions Verified Agent Identity skill;
+- create or verify agent identity / DID;
+- link agent to verified human;
+- prepare for free tile claim safely;
+- stop before accidental paid claims;
+- save proof after a successful claim;
+- troubleshoot common errors.
 
 ## Important
 
