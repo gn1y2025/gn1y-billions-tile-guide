@@ -74,7 +74,7 @@ If you lose the KMS secret, encrypted identity keys may become unusable.
 Run this in the same PowerShell session before creating identity:
 
 ```powershell
-$secure = Read-Host "Enter a strong local Billions KMS secret. Do not use seed/private key" -AsSecureString
+$secure = Read-Host "Enter a strong local Billions KMS secret. Do not use seed phrase or wallet key" -AsSecureString
 $ptr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
 $env:BILLIONS_NETWORK_MASTER_KMS_KEY = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($ptr)
 [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ptr)
@@ -92,7 +92,7 @@ This sets the variable only for the current PowerShell session.
 Run this in the same Terminal session before creating identity:
 
 ```bash
-read -s -p "Enter a strong local Billions KMS secret. Do not use seed/private key: " BILLIONS_NETWORK_MASTER_KMS_KEY
+read -s -p "Enter a strong local Billions KMS secret. Do not use seed phrase or wallet key: " BILLIONS_NETWORK_MASTER_KMS_KEY
 export BILLIONS_NETWORK_MASTER_KMS_KEY
 echo ""
 
@@ -132,7 +132,7 @@ If you back it up, keep the backup encrypted and offline.
 Stop if:
 
 - you do not understand what KMS secret means;
-- you are about to use a seed phrase as KMS secret;
+- you are about to use a seed phrase or wallet key as KMS secret;
 - you are about to upload `kms.json`;
 - you are about to copy identity from another agent;
 - you lost the KMS secret and cannot decrypt old identity data.
@@ -140,3 +140,4 @@ Stop if:
 When unsure:
 
 **STOP and ask for help.**
+
