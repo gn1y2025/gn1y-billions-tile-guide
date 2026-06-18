@@ -7,26 +7,33 @@ Write-Host "gn1y Billions Tile Guide — Windows Preflight"
 Write-Host "This script checks tools and folders only. It does not claim tiles and does not spend funds."
 Write-Host ""
 
-function Test-CommandExists {
-  param([string]$CommandName)
+$ErrorActionPreference = "Stop"
+$missing = $false
 
-  $cmd = Get-Command $CommandName -ErrorAction SilentlyContinue
+function Check-Command($Name) {
+  $cmd = Get-Command $Name -ErrorAction SilentlyContinue
   if ($cmd) {
-    Write-Host "OK: $CommandName found"
-    return $true
+    Write-Host "OK: $Name found"
   } else {
-    Write-Host "MISSING: $CommandName not found"
-    return $false
+    Write-Host "MISSING: $Name not found"
+    $script:missing = $true
   }
 }
 
-$ok = $true
+Check-Command git
+Check-Command node
+Check-Command npm
+Check-Command npx
+Check-Command openclaw
 
-if (!(Test-CommandExists "git")) { $ok = $false }
-if (!(Test-CommandExists "node")) { $ok = $false }
-if (!(Test-CommandExists "npm")) { $ok = $false }
-if (!(Test-CommandExists "npx")) { $ok = $false }
-if (!(Test-CommandExists "openclaw")) { $ok = $false }
+Write-Host ""
+
+try {
+  Write-Host "OpenClaw gateway status:"
+  openclaw gateway status
+} catch {
+  Write-Host "WARNING: openclaw gateway status failed. Run onboarding or start the gateway before full agent work."
+}
 
 Write-Host ""
 
@@ -43,47 +50,50 @@ if (!(Test-Path $AgentRoot)) {
 Write-Host "OK: Agent folder exists"
 Write-Host "Agent folder: $AgentRoot"
 
-$skillDirs = Get-ChildItem -Path $AgentRoot -Recurse -Directory -Filter "verified-agent-identity" -ErrorAction SilentlyContinue
+$skillDirs = @(Get-ChildItem -Path $AgentRoot -Recurse -Directory -Filter "verified-agent-identity" -ErrorAction SilentlyContinue)
 
-if (!$skillDirs -or $skillDirs.Count -eq 0) {
+if ($skillDirs.Count -eq 0) {
   Write-Host "MISSING: verified-agent-identity skill folder not found"
   Write-Host "Next step: install official Billions Verified Agent Identity skill"
   exit 1
 }
 
-$skillDir = $skillDirs[0].FullName
+if ($skillDirs.Count -gt 1) {
+  Write-Host "WARNING: Multiple verified-agent-identity folders found. Confirm the correct one before continuing."
+  $skillDirs | ForEach-Object { Write-Host "- $($_.FullName)" }
+}
+
+$SkillDir = $skillDirs[0].FullName
+
 Write-Host "OK: verified-agent-identity skill found"
-Write-Host "Skill folder: $skillDir"
+Write-Host "Skill folder: $SkillDir"
 
-$packageJson = Join-Path $skillDir "package.json"
-if (Test-Path $packageJson) {
-  Write-Host "OK: package.json found"
-} else {
-  Write-Host "MISSING: package.json not found in skill folder"
-  exit 1
-}
+$requiredFiles = @(
+  "package.json",
+  "scripts\createNewEthereumIdentity.js",
+  "scripts\manualLinkHumanToAgent.js",
+  "scripts\getIdentities.js",
+  "scripts\buildX402Payment.js"
+)
 
-$createIdentity = Join-Path $skillDir "scripts\createNewEthereumIdentity.js"
-$linkHuman = Join-Path $skillDir "scripts\manualLinkHumanToAgent.js"
-
-if (Test-Path $createIdentity) {
-  Write-Host "OK: createNewEthereumIdentity.js found"
-} else {
-  Write-Host "MISSING: createNewEthereumIdentity.js not found"
-  $ok = $false
-}
-
-if (Test-Path $linkHuman) {
-  Write-Host "OK: manualLinkHumanToAgent.js found"
-} else {
-  Write-Host "MISSING: manualLinkHumanToAgent.js not found"
-  $ok = $false
+foreach ($rel in $requiredFiles) {
+  $full = Join-Path $SkillDir $rel
+  if (Test-Path $full) {
+    Write-Host "OK: $rel found"
+  } else {
+    Write-Host "MISSING: $rel not found"
+    $missing = $true
+  }
 }
 
 Write-Host ""
 
-if ($ok) {
+if (!$missing) {
   Write-Host "Preflight completed. Basic setup looks ready."
+  Write-Host "Next recommended check:"
+  Write-Host "  cd `"$SkillDir`""
+  Write-Host "  node scripts/getIdentities.js"
+  Write-Host ""
   Write-Host "This script did not claim a tile and did not spend funds."
   exit 0
 } else {

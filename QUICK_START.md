@@ -20,6 +20,58 @@ Stop immediately if you see:
 ---
 
 <details>
+<summary><strong>Step 0 — New user / no agent yet</strong></summary>
+
+Start here:
+
+[Create an OpenClaw Agent](./guides/create-agent.md)
+
+You need:
+
+```text
+Node.js 24 recommended
+OpenClaw installed
+OpenClaw onboarding completed
+model provider API key configured
+Gateway running
+Dashboard opening
+one correct OpenClaw agent selected
+```
+
+Useful checks:
+
+```bash
+node -v
+openclaw --version
+openclaw gateway status
+openclaw dashboard
+openclaw agents list --bindings
+```
+
+</details>
+
+---
+
+<details>
+<summary><strong>Step 1 — KMS security before identity creation</strong></summary>
+
+Read:
+
+[KMS Security](./guides/kms-security.md)
+
+Important:
+
+- Billions identity data may live in `$HOME/.openclaw/billions`;
+- `kms.json` is sensitive;
+- do not upload `kms.json`;
+- do not commit identity backups;
+- use `BILLIONS_NETWORK_MASTER_KMS_KEY` before creating/importing identity if you want encrypted key storage.
+
+</details>
+
+---
+
+<details>
 <summary><strong>Windows PowerShell</strong></summary>
 
 Use this guide:
@@ -41,6 +93,7 @@ node -v
 npm -v
 npx -v
 openclaw --version
+openclaw gateway status
 ```
 
 </details>
@@ -69,6 +122,7 @@ node -v
 npm -v
 npx -v
 openclaw --version
+openclaw gateway status
 ```
 
 </details>
@@ -97,6 +151,7 @@ node -v
 npm -v
 npx -v
 openclaw --version
+openclaw gateway status
 ```
 
 </details>
@@ -119,6 +174,38 @@ The agent must stop before:
 - wrong DID;
 - wrong agent address;
 - seed/private key request.
+
+</details>
+
+---
+
+<details>
+<summary><strong>Instant API Free Claim</strong></summary>
+
+Use this guide:
+
+[Instant API Claim](./guides/instant-api-claim.md)
+
+This is the one-shot terminal flow:
+
+```text
+Phase1 -> select free amount=0 -> Phase2 -> fresh claim_id -> immediate POST /api/v1/tiles
+```
+
+Important:
+
+- claim may expire in around 5 minutes;
+- do not pause between Phase2 and submit;
+- do not reuse old claims;
+- stop if you see `10 USDC` or `amount=10000000`;
+- run `getIdentities.js` before `buildX402Payment.js`;
+- treat this script as experimental until tested on a safe agent.
+
+Windows script:
+
+```powershell
+.\scripts\windows-instant-free-claim.ps1
+```
 
 </details>
 
@@ -153,35 +240,5 @@ Main sections:
 - [Pairing errors](./troubleshooting/pairing-errors.md)
 - [Claim errors](./troubleshooting/claim-errors.md)
 - [Paid claim safety](./troubleshooting/paid-claim-safety.md)
-
-</details>
-
----
-
-<details>
-<summary><strong>Instant API Free Claim</strong></summary>
-
-Use this guide:
-
-[Instant API Claim](./guides/instant-api-claim.md)
-
-This is the one-shot terminal flow:
-
-```text
-Phase1 -> select free amount=0 -> Phase2 -> fresh claim_id -> immediate POST /api/v1/tiles
-```
-
-Important:
-
-- claim may expire in around 5 minutes;
-- do not pause between Phase2 and submit;
-- do not reuse old claims;
-- stop if you see `10 USDC` or `amount=10000000`.
-
-Windows script:
-
-```powershell
-.\scripts\windows-instant-free-claim.ps1
-```
 
 </details>

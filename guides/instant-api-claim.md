@@ -87,6 +87,44 @@ If the file is missing, install or repair the official Billions Verified Agent I
 
 ---
 
+
+---
+
+## Identity-first check
+
+Before running `buildX402Payment.js`, check identities:
+
+```powershell
+node scripts/getIdentities.js
+```
+
+Continue only if:
+
+```text
+DID exists
+default identity is correct
+human link is verified
+agent address is correct
+```
+
+Stop if the identity belongs to another agent.
+
+---
+
+## Experimental status
+
+This one-shot script follows the terminal flow used in successful community claims.
+
+Before recommending it publicly, test it on one safe agent and confirm:
+
+```text
+amount=0 selected
+paid=false after submit
+claim_id is fresh
+no 10 USDC path used
+proof JSON saved locally
+```
+
 ## Windows one-shot free claim script
 
 Run from the guide repository folder:
@@ -155,3 +193,4 @@ Based on support clarification:
 ```text
 One verified human = one agent = one free tile.
 ```
+

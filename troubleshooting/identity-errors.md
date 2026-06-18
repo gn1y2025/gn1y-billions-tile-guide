@@ -188,3 +188,43 @@ Restore from a backup if available.
 Create a fresh identity only for the intended agent.
 
 Never copy identity between different agents.
+
+---
+
+## KMS secret missing or misunderstood
+
+### Meaning
+
+Billions identity storage can use `BILLIONS_NETWORK_MASTER_KMS_KEY` to encrypt private key values inside `kms.json`.
+
+If the variable is not set, storage may use plaintext mode.
+
+### Fix
+
+Read:
+
+```text
+guides/kms-security.md
+```
+
+Set the KMS secret before creating/importing identity.
+
+Do not use seed phrase or wallet private key as KMS secret.
+
+If you lose the KMS secret, encrypted keys may become unusable.
+
+---
+
+## `getIdentities.js` missing
+
+### Meaning
+
+The installed skill may be incomplete, outdated, or not the official `verified-agent-identity` skill.
+
+### Fix
+
+Stop.
+
+Repair or reinstall the official skill.
+
+Do not continue to `manualLinkHumanToAgent.js` or `buildX402Payment.js` without identity check.

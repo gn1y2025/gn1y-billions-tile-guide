@@ -4,11 +4,11 @@ Use this section if something goes wrong.
 
 ## Sections
 
-- [Windows errors](./windows-errors.md)
-- [Identity errors](./identity-errors.md)
-- [Pairing errors](./pairing-errors.md)
-- [Claim errors](./claim-errors.md)
-- [Paid claim safety](./paid-claim-safety.md)
+- [Windows errors](./troubleshooting/windows-errors.md)
+- [Identity errors](./troubleshooting/identity-errors.md)
+- [Pairing errors](./troubleshooting/pairing-errors.md)
+- [Claim errors](./troubleshooting/claim-errors.md)
+- [Paid claim safety](./troubleshooting/paid-claim-safety.md)
 
 ## Important
 
@@ -24,4 +24,4 @@ Do not share:
 
 When asking for help, use:
 
-- [Support question template](../templates/support-question-template.md)
+- [Support question template](./templates/support-question-template.md)

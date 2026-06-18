@@ -120,6 +120,26 @@ Write-Host ""
 
 Set-Location $buildDir
 
+Write-Host "Identity check before x402..."
+Write-Host ""
+
+if (!(Test-Path ".\getIdentities.js")) {
+  Stop-Guide "getIdentities.js not found. Official guardrail requires identity check before buildX402Payment.js."
+}
+
+$identityRaw = & node ".\getIdentities.js" 2>&1
+$identityText = ($identityRaw | Out-String)
+
+if ($LASTEXITCODE -ne 0) {
+  Write-Host $identityText
+  Stop-Guide "getIdentities.js failed. Do not continue."
+}
+
+Write-Host $identityText
+Write-Host ""
+Write-Host "Continue only if DID/default identity/human link are correct for this agent."
+Write-Host ""
+
 $resource = "https://x402.billions.network/api/v1/canvas/current"
 $submitUrl = "https://x402.billions.network/api/v1/tiles"
 
@@ -160,7 +180,10 @@ foreach ($candidate in $allPaymentCandidates) {
     $freeCandidates += $candidate
   }
 
-  if ("$amount" -eq "10000000" -or [decimal]::TryParse("$amount", [ref]([decimal]$tmp = 0)) -and [decimal]"$amount" -gt 0) {
+  $parsedAmount = 0
+  $isNumber = [decimal]::TryParse("$amount", [ref]$parsedAmount)
+
+  if ("$amount" -eq "10000000" -or ($isNumber -and $parsedAmount -gt 0)) {
     $paidCandidates += $candidate
   }
 }
@@ -330,3 +353,4 @@ Write-Host "- Claim date"
 Write-Host ""
 Write-Host "Never share seed phrases, private keys, wallet keys, kms.json, or sensitive identity data."
 Write-Host ""
+

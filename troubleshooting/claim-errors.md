@@ -183,3 +183,45 @@ Stop immediately.
 This is unsafe.
 
 No legitimate claim flow should ask for seed phrase or private key.
+
+---
+
+## Instant API claim script fails
+
+### Possible causes
+
+- `buildX402Payment.js` is missing;
+- `getIdentities.js` failed;
+- no free `amount=0` option exists;
+- only paid `amount=10000000` option exists;
+- claim expired;
+- API response shape changed;
+- wrong agent folder selected.
+
+### Fix
+
+Do not reuse old `claim_id`.
+
+Run a fresh flow only after fixing the issue.
+
+If the script shows `10 USDC`, `amount=10000000`, or any amount greater than `0`, stop.
+
+---
+
+## Claim expired
+
+### Meaning
+
+The fresh claim has a short expiry window.
+
+During previous successful terminal claims, the remaining time was around 5 minutes.
+
+### Fix
+
+Do not manually reuse the old claim.
+
+Run the full flow again:
+
+```text
+Phase1 -> free amount=0 -> Phase2 -> fresh claim_id -> immediate submit
+```

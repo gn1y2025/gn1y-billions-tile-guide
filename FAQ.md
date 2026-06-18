@@ -99,3 +99,33 @@ Optional.
 If this guide helped, you can optionally leave feedback or a comment in Discord, X, or GitHub.
 
 Do not share sensitive data.
+
+## How do I create a new OpenClaw agent?
+
+Start here:
+
+[Create an OpenClaw Agent](./guides/create-agent.md)
+
+This covers OpenClaw install, onboarding, Gateway check, Dashboard check, and `openclaw agents add`.
+
+## What is `BILLIONS_NETWORK_MASTER_KMS_KEY`?
+
+It is a local encryption secret for Billions identity storage.
+
+It is not a seed phrase and not a wallet private key.
+
+Read:
+
+[KMS Security](./guides/kms-security.md)
+
+## Why run `getIdentities.js` before x402?
+
+Because the official Billions skill guardrail requires checking identity before link/sign/x402 actions.
+
+Run:
+
+```bash
+node scripts/getIdentities.js
+```
+
+Continue only if the DID/default identity/human link belong to the intended agent.
