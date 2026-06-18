@@ -13,6 +13,7 @@ This guide is unofficial. It does **not** guarantee FAIAR rewards, airdrop alloc
 - [macOS Guide](./guides/macos.md)
 - [AI Agent Chat Mode](./guides/agent-chat-mode.md)
 - [Paid Tile Guide](./guides/paid-tile.md)
+- [Instant API Claim](./guides/instant-api-claim.md)
 - [Troubleshooting](./TROUBLESHOOTING.md)
 - [FAQ](./FAQ.md)
 - [Disclaimer](./DISCLAIMER.md)
@@ -91,3 +92,4 @@ Based on support clarification:
 ## Credits
 
 Community guide by **gn1y**.
+

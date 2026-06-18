@@ -155,3 +155,33 @@ Main sections:
 - [Paid claim safety](./troubleshooting/paid-claim-safety.md)
 
 </details>
+
+---
+
+<details>
+<summary><strong>Instant API Free Claim</strong></summary>
+
+Use this guide:
+
+[Instant API Claim](./guides/instant-api-claim.md)
+
+This is the one-shot terminal flow:
+
+```text
+Phase1 -> select free amount=0 -> Phase2 -> fresh claim_id -> immediate POST /api/v1/tiles
+```
+
+Important:
+
+- claim may expire in around 5 minutes;
+- do not pause between Phase2 and submit;
+- do not reuse old claims;
+- stop if you see `10 USDC` or `amount=10000000`.
+
+Windows script:
+
+```powershell
+.\scripts\windows-instant-free-claim.ps1
+```
+
+</details>
