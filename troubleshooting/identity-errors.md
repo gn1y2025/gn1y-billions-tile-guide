@@ -15,7 +15,7 @@ The official Billions Verified Agent Identity skill is not installed in the sele
 From your agent folder, try:
 
 ```powershell
-npx openclaw skills install identity
+openclaw skills install verified-agent-identity
 ```
 
 If that fails, try:
@@ -228,3 +228,4 @@ Stop.
 Repair or reinstall the official skill.
 
 Do not continue to `manualLinkHumanToAgent.js` or `buildX402Payment.js` without identity check.
+

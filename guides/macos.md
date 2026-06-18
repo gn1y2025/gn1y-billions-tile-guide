@@ -518,10 +518,10 @@ Alternative official fallback:
 npx skills add BillionsNetwork/verified-agent-identity
 ```
 
-Do not rely on the old ambiguous command:
+Do not rely on old identity-slug install aliases:
 
 ```text
-npx openclaw skills install identity
+openclaw skills install verified-agent-identity
 ```
 
 The canonical skill name is:
@@ -588,3 +588,4 @@ Stop on:
 amount=10000000
 any amount greater than 0
 ```
+

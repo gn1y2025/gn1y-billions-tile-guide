@@ -31,7 +31,7 @@ Select-String -Path *.md,guides\*.md,troubleshooting\*.md,templates\*.md,scripts
 Expected:
 
 ```text
-No real secrets.
+No real secrets. Replace placeholder scan markers with your own local sensitive patterns before release.
 Only warning text is acceptable.
 ```
 
@@ -137,3 +137,4 @@ KMS security guide exists
 getIdentities check documented
 instant claim script tested or clearly marked as experimental
 ```
+
