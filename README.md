@@ -1,102 +1,80 @@
 ﻿# gn1y Billions AI Agentic Movie Tile Guide
 
-Safety-first community guide for verified human-backed OpenClaw agents who want to claim Billions AI Agentic Movie Tiles.
+Safety-first community guide for OpenClaw agents and Billions AI Agentic Movie Tiles.
 
 This guide is unofficial. It does **not** guarantee FAIAR rewards, airdrop allocation, leaderboard rewards, free tile eligibility, or any future token distribution.
 
 ## Start here
 
-- [Quick Start](./QUICK_START.md)
-- [Create an OpenClaw Agent](./guides/create-agent.md)
-- [KMS Security](./guides/kms-security.md)
-- [Security](./SECURITY.md)
-- [Windows Guide](./guides/windows.md)
-- [Linux Guide](./guides/linux.md)
-- [macOS Guide](./guides/macos.md)
-- [AI Agent Chat Mode](./guides/agent-chat-mode.md)
-- [Paid Tile Guide](./guides/paid-tile.md)
-- [Instant API Claim](./guides/instant-api-claim.md)
-- [Troubleshooting](./TROUBLESHOOTING.md)
-- [FAQ](./FAQ.md)
-- [Disclaimer](./DISCLAIMER.md)
-- [Release Checklist](./RELEASE_CHECKLIST.md)
+Open:
+
+[START_HERE.md](./START_HERE.md)
+
+That file gives you the correct route:
+
+```text
+Route A: I already have an OpenClaw agent
+Route B: I need to create an OpenClaw agent from zero
+Route C: My agent already has identity + human link and I want to claim Tiles
+```
+
+## Main goal
+
+This repository helps with two practical flows:
+
+### Flow 1 — Existing agent to successful Tiles claim
+
+```text
+existing OpenClaw agent
+-> check current state
+-> verify Billions identity skill
+-> verify DID / identity
+-> verify human link
+-> run instant free API claim
+-> save proof
+```
+
+### Flow 2 — New agent from zero
+
+```text
+install OpenClaw
+-> run onboarding
+-> add model provider API key
+-> create OpenClaw agent
+-> check Gateway / Dashboard
+-> continue to existing-agent status check
+```
 
 ## Default mode
 
 **FREE CLAIM ONLY**
 
-Paid tile claim is optional and spends real funds.
-
-## Tested baseline
-
-Recommended baseline for this guide:
+The instant API claim flow is designed for:
 
 ```text
-Node.js 24
-OpenClaw latest stable
-Billions Verified Agent Identity skill
+amount=0 only
 ```
 
-Node 22.19+ may work, but Node 24 is the recommended baseline.
-
-## What this guide helps with
-
-This guide helps users and AI agents safely:
-
-- install and verify OpenClaw;
-- run OpenClaw onboarding;
-- check Gateway and Dashboard;
-- create or identify an OpenClaw agent;
-- install or verify the official Billions Verified Agent Identity skill;
-- configure KMS security for Billions identity storage;
-- create or verify an agent identity / DID;
-- check identities before link/sign/x402 actions;
-- link an agent to a verified Billions human account;
-- prepare for the official Billions AI Agentic Movie / x402 claim flow;
-- run an experimental one-shot free API claim flow;
-- stop before accidental paid claims;
-- save proof after a successful claim;
-- troubleshoot common setup, identity, pairing, and claim errors.
-
-## Repository structure
+Stop immediately if you see:
 
 ```text
-README.md
-QUICK_START.md
-SECURITY.md
-DISCLAIMER.md
-FAQ.md
-RELEASE_CHECKLIST.md
-.nvmrc
-
-guides/
-  create-agent.md
-  kms-security.md
-  windows.md
-  linux.md
-  macos.md
-  agent-chat-mode.md
-  paid-tile.md
-  instant-api-claim.md
-
-troubleshooting/
-  windows-errors.md
-  identity-errors.md
-  pairing-errors.md
-  claim-errors.md
-  paid-claim-safety.md
-
-scripts/
-  windows-preflight.ps1
-  linux-preflight.sh
-  macos-preflight.sh
-  windows-instant-free-claim.ps1
-
-templates/
-  proof-template.md
-  feedback-template.md
-  support-question-template.md
+10 USDC
+amount=10000000
+any amount greater than 0
 ```
+
+## Main route files
+
+- [Start Here](./START_HERE.md)
+- [Existing Agent Status Check](./guides/existing-agent-status.md)
+- [Create an OpenClaw Agent](./guides/create-agent.md)
+- [Instant API Claim](./guides/instant-api-claim.md)
+- [KMS Security](./guides/kms-security.md)
+- [Windows Guide](./guides/windows.md)
+- [Linux Guide](./guides/linux.md)
+- [macOS Guide](./guides/macos.md)
+- [Paid Tile Guide](./guides/paid-tile.md)
+- [Troubleshooting](./TROUBLESHOOTING.md)
 
 ## Important rules
 
@@ -116,34 +94,62 @@ Based on support clarification:
 
 > One verified human = one agent = one free tile.
 
-## x402 / API claim note
-
-The instant API claim script is designed for:
+## Repository map
 
 ```text
-FREE CLAIM ONLY
-amount=0 only
+README.md
+START_HERE.md
+QUICK_START.md
+SECURITY.md
+DISCLAIMER.md
+FAQ.md
+RELEASE_CHECKLIST.md
+TROUBLESHOOTING.md
+.nvmrc
+
+guides/
+  existing-agent-status.md
+  create-agent.md
+  instant-api-claim.md
+  kms-security.md
+  windows.md
+  linux.md
+  macos.md
+  agent-chat-mode.md
+  paid-tile.md
+
+scripts/
+  windows-preflight.ps1
+  linux-preflight.sh
+  macos-preflight.sh
+  windows-instant-free-claim.ps1
+
+troubleshooting/
+  windows-errors.md
+  identity-errors.md
+  pairing-errors.md
+  claim-errors.md
+  paid-claim-safety.md
+
+templates/
+  proof-template.md
+  feedback-template.md
+  support-question-template.md
 ```
-
-It must stop on:
-
-```text
-10 USDC
-amount=10000000
-any amount greater than 0
-```
-
-The script reflects community-tested terminal flow behavior, including the short claim expiry window observed during successful agent claims.
 
 ## Scope note
 
-This repository focuses on OpenClaw + Billions identity + Tiles claim preparation.
+This repository focuses on:
+
+```text
+OpenClaw agent
++ Billions Verified Agent Identity
++ human-agent link
++ Tiles claim preparation / instant free claim
+```
 
 It does not fully document ERC-8004 / 8004scan registration or custom x402 server/client SDK integration.
-
-For custom x402 provider/client development, use official Billions x402 Human Proof documentation and repositories.
 
 ## Credits
 
 Community guide by **gn1y**.
-

@@ -10,6 +10,31 @@ Default mode:
 
 ---
 
+## Ready-agent gate
+
+Do not run this claim script until your agent passed:
+
+[Existing Agent Status Check](./existing-agent-status.md)
+
+Required before claim:
+
+```text
+Agent folder: correct
+verified-agent-identity skill: installed
+getIdentities.js: exists
+buildX402Payment.js: exists
+DID: exists
+Default identity: correct
+Human link: verified
+Agent address: correct
+Expected amount: 0
+```
+
+If any item is missing, go back to:
+
+[Existing Agent Status Check](./existing-agent-status.md)
+
+---
 ## Why this section exists
 
 When claiming Tiles from terminal, the claim can expire quickly.
@@ -193,4 +218,5 @@ Based on support clarification:
 ```text
 One verified human = one agent = one free tile.
 ```
+
 

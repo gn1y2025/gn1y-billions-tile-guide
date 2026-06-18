@@ -43,6 +43,7 @@ Check that these files exist:
 
 ```text
 README.md
+START_HERE.md
 QUICK_START.md
 SECURITY.md
 DISCLAIMER.md
@@ -50,6 +51,7 @@ FAQ.md
 RELEASE_CHECKLIST.md
 .nvmrc
 
+guides/existing-agent-status.md
 guides/create-agent.md
 guides/kms-security.md
 guides/windows.md
@@ -137,4 +139,5 @@ KMS security guide exists
 getIdentities check documented
 instant claim script tested or clearly marked as experimental
 ```
+
 

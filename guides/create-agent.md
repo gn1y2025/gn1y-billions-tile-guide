@@ -184,3 +184,24 @@ Stop if:
 When unsure:
 
 **STOP and ask for help.**
+
+---
+
+## After creating the agent
+
+After your new OpenClaw agent exists and Gateway/Dashboard work, do not jump directly to claim.
+
+Continue here:
+
+[Existing Agent Status Check](./existing-agent-status.md)
+
+That page will guide you through:
+
+```text
+verify skill
+create/check DID
+link/check human account
+prepare instant free Tile claim
+```
+
+If you are only testing agent creation, stop after Gateway/Dashboard and do not claim Tiles.
