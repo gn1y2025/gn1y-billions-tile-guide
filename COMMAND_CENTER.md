@@ -1,133 +1,175 @@
 ﻿# Command Center
 
-Start here if you are on Windows and want the shortest path.
+Start here if you are on Windows and want the shortest safe path.
 
-This page gives you the main audit command.
-
-The audit command is called:
+The goal is simple:
 
 ```text
-Windows Agent Doctor
+run one audit command
+-> terminal checks your PC
+-> terminal tells you the next exact file to open
 ```
-
-It checks your PC and tells you what to do next.
 
 ---
 
-## What Agent Doctor does
+## Step 1 — Run Windows Agent Doctor
 
-Agent Doctor searches for OpenClaw agent folders and checks:
-
-```text
-OpenClaw CLI
-agent folder
-verified-agent-identity skill
-package.json
-scripts/getIdentities.js
-scripts/createNewEthereumIdentity.js
-scripts/manualLinkHumanToAgent.js
-scripts/buildX402Payment.js
-DID / identity output
-x402-ready status
-```
+Windows Agent Doctor checks your PC and tells you what to do next.
 
 It does **not**:
 
 ```text
 claim Tiles
-spend funds
+send funds
 install anything
 update anything
 delete anything
 touch private keys manually
 ```
 
+It only checks and prints a result.
+
 ---
 
-## Run this first
+## Copy-paste command — public GitHub mode
 
-Open **PowerShell** and paste:
+Use this when the repo is public.
+
+Open PowerShell and paste:
 
 ```powershell
-irm https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1 | iex
+$DoctorUrl = "https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1"
+$DoctorFile = Join-Path $env:TEMP "gn1y-windows-agent-doctor.ps1"
+
+Invoke-WebRequest -UseBasicParsing -Uri $DoctorUrl -OutFile $DoctorFile
+
+Write-Host ""
+Write-Host "Windows Agent Doctor downloaded to:"
+Write-Host $DoctorFile
+Write-Host ""
+
+notepad $DoctorFile
+
+Read-Host "Review the script in Notepad. Press Enter to run Windows Agent Doctor"
+
+powershell -NoProfile -ExecutionPolicy Bypass -File $DoctorFile
 ```
 
-If you already know your exact agent folder, use the local script version after cloning, or open `scripts/windows-agent-doctor.ps1` and pass:
+If PowerShell cannot download the file, the repo may still be private. Use local testing mode below.
+
+---
+
+## Copy-paste command — private/local testing mode
+
+Use this while testing your own cloned repo.
 
 ```powershell
--AgentRoot "FULL_PATH_TO_YOUR_AGENT_FOLDER"
+cd "$env:USERPROFILE\Desktop\quide-by-gn1y"
+.\scripts\windows-agent-doctor.ps1
 ```
 
 ---
 
-## What the terminal will tell you
+## Step 2 — Read the terminal result
 
-At the end, Agent Doctor prints one of these outcomes:
+Doctor will end with a `NEXT STEP`.
 
-### 1. Ready for free claim
+Follow only that result.
+
+---
+
+## Possible results
+
+### Result 1 — no agent found
+
+Open:
+
+[guides/create-agent.md](./guides/create-agent.md)
+
+Use this if you need to create an OpenClaw agent from zero.
+
+---
+
+### Result 2 — agent found, but identity skill missing
+
+Open:
+
+[guides/existing-agent-status.md](./guides/existing-agent-status.md)
+
+Go to the case where the agent exists but `verified-agent-identity` is missing.
+
+---
+
+### Result 3 — skill found, but outdated / not x402-ready
+
+Open:
+
+[guides/update-identity-skill.md](./guides/update-identity-skill.md)
+
+Do **not** claim Tiles yet.
+
+The most important x402-ready marker is:
 
 ```text
-READY CANDIDATE FOUND
-Next file: guides/free-claim-copy-paste-windows.md
+scripts/buildX402Payment.js
 ```
 
-Then open:
-
-[Free Claim Copy-Paste Windows](./guides/free-claim-copy-paste-windows.md)
+If this file is missing, update or repair the identity skill first.
 
 ---
 
-### 2. Skill missing
+### Result 4 — identity missing
+
+Open:
+
+[guides/existing-agent-status.md](./guides/existing-agent-status.md)
+
+Go to the case where the skill exists but DID / identity is missing.
+
+---
+
+### Result 5 — human link missing or unclear
+
+Open:
+
+[guides/existing-agent-status.md](./guides/existing-agent-status.md)
+
+Go to the human link / pairing section.
+
+Do not claim until the correct human account is linked.
+
+---
+
+### Result 6 — ready to claim
+
+Open:
+
+[guides/free-claim-copy-paste-windows.md](./guides/free-claim-copy-paste-windows.md)
+
+Continue only if:
 
 ```text
-NO_IDENTITY_SKILL
-Next file: guides/existing-agent-status.md
-Case A1 — Skill missing
+agent folder is correct
+DID looks correct
+human link is verified / confirmed
+buildX402Payment.js exists
+free amount is exactly 0
 ```
 
-Then open:
-
-[Existing Agent Status Check](./guides/existing-agent-status.md)
-
----
-
-### 3. Skill outdated / not x402-ready
+Stop if you see:
 
 ```text
-UPDATE_SKILL_FIRST
-Next file: guides/update-identity-skill.md
+10 USDC
+amount=10000000
+amount > 0
 ```
 
-Then open:
-
-[Update Identity Skill](./guides/update-identity-skill.md)
-
 ---
 
-### 4. DID missing
+## Privacy before sharing logs
 
-```text
-NO_DID
-Next file: guides/existing-agent-status.md
-Case A2 — identity missing
-```
+Before posting Doctor output in Discord, GitHub, Telegram, or X, read:
 
-Then open:
+[PRIVACY.md](./PRIVACY.md)
 
-[Existing Agent Status Check](./guides/existing-agent-status.md)
-
----
-
-### 5. No agent found
-
-Then open:
-
-[Create an OpenClaw Agent](./guides/create-agent.md)
-
----
-
-## Main rule
-
-Do not guess.
-
-Run Agent Doctor first, then follow the file it prints in the terminal.
+Redact anything you do not want public.

@@ -1,95 +1,134 @@
-﻿# Free Claim Copy-Paste Windows
+﻿# Free Claim Copy-Paste — Windows
 
-Use this only after Agent Doctor says your agent is ready.
+Use this only after Windows Agent Doctor says your agent is ready.
 
-Required before running:
+Start from:
 
-```text
-Agent folder: correct
-verified-agent-identity: found
-scripts/getIdentities.js: found
-scripts/buildX402Payment.js: found
-DID: detected
-Human link: verified manually
-Expected claim: free only
-```
+[../COMMAND_CENTER.md](../COMMAND_CENTER.md)
 
 ---
 
-## Stop signs
+## Ready gate
+
+Continue only if all are true:
+
+```text
+agent folder is correct
+verified-agent-identity exists
+scripts/buildX402Payment.js exists
+getIdentities.js works
+DID / identity looks correct
+human link is verified / confirmed
+```
+
+Stop if anything is unclear.
+
+---
+
+## Safety stop
 
 Stop immediately if you see:
 
 ```text
 10 USDC
 amount=10000000
-any amount greater than 0
+amount > 0
+wrong agent
 wrong DID
-wrong agent address
-unverified human link
-claim expired
+wrong human link
+```
+
+The free Tile claim must use:
+
+```text
+amount=0
+Paid: false
 ```
 
 ---
 
-## Claim command
+## Public GitHub mode
 
-This command downloads and runs the helper claim script from this repository.
-
-It does not require cloning the whole repo.
+Use this when the repo is public.
 
 Open PowerShell and paste:
 
 ```powershell
-$AGENT_ROOT = Read-Host "Paste full path to your OpenClaw agent folder"
-$INTENT = Read-Host "Tile intent text"
-
-if ([string]::IsNullOrWhiteSpace($INTENT)) {
-  $INTENT = "AI agent movie tile claim"
+$AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
+if (!(Test-Path $AgentRoot)) {
+  throw "STOP: Agent folder does not exist: $AgentRoot"
 }
 
-$ScriptUrl = "https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-instant-free-claim.ps1"
-$LocalScript = Join-Path $env:TEMP "gn1y-windows-instant-free-claim.ps1"
+$ClaimUrl = "https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-instant-free-claim.ps1"
+$ClaimFile = Join-Path $env:TEMP "gn1y-windows-instant-free-claim.ps1"
 
-Write-Host "Downloading helper claim script..."
-Invoke-WebRequest -UseBasicParsing -Uri $ScriptUrl -OutFile $LocalScript
+Invoke-WebRequest -UseBasicParsing -Uri $ClaimUrl -OutFile $ClaimFile
 
-Write-Host "Running FREE claim helper..."
-powershell -ExecutionPolicy Bypass -File $LocalScript -AgentRoot $AGENT_ROOT -Intent $INTENT
+Write-Host ""
+Write-Host "Claim script downloaded to:"
+Write-Host $ClaimFile
+Write-Host ""
+
+notepad $ClaimFile
+
+Read-Host "Review the script in Notepad. Press Enter to run FREE Tile claim"
+
+powershell -NoProfile -ExecutionPolicy Bypass -File $ClaimFile -AgentRoot $AgentRoot -Intent "AI agent movie tile claim"
+
+if ($?) {
+  Write-Host ""
+  Write-Host "------------------------------------------------------------"
+  Write-Host "Claim command finished without a PowerShell error."
+  Write-Host "If the output above shows Tile claimed / Paid false / amount 0:"
+  Write-Host ""
+  Write-Host "SUCCESS: Free Tile claim flow completed."
+  Write-Host "Community guide by gn1y."
+  Write-Host "Feedback is welcome:"
+  Write-Host "https://github.com/gn1y2025/gn1y-billions-tile-guide"
+  Write-Host "------------------------------------------------------------"
+}
+```
+
+---
+
+## Private/local testing mode
+
+Use this while testing your own cloned repo.
+
+```powershell
+cd "$env:USERPROFILE\Desktop\quide-by-gn1y"
+
+$AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
+if (!(Test-Path $AgentRoot)) {
+  throw "STOP: Agent folder does not exist: $AgentRoot"
+}
+
+.\scripts\windows-instant-free-claim.ps1 -AgentRoot $AgentRoot -Intent "AI agent movie tile claim"
+
+if ($?) {
+  Write-Host ""
+  Write-Host "------------------------------------------------------------"
+  Write-Host "Claim command finished without a PowerShell error."
+  Write-Host "If the output above shows Tile claimed / Paid false / amount 0:"
+  Write-Host ""
+  Write-Host "SUCCESS: Free Tile claim flow completed."
+  Write-Host "Community guide by gn1y."
+  Write-Host "Feedback is welcome:"
+  Write-Host "templates/feedback-template.md"
+  Write-Host "------------------------------------------------------------"
+}
 ```
 
 ---
 
 ## After success
 
-Save proof using:
-
-[Proof Template](../templates/proof-template.md)
-
-Required proof fields:
-
-```text
-Agent name
-Agent folder
-DID
-Agent address
-Tile ID
-Canvas ID
-Coordinates
-Transaction hash
-Paid: false
-Date
-Explorer link
-```
-
----
-
-## If it fails
-
-Do not manually reuse old `claim_id`.
-
-Run fresh flow only.
-
 Open:
 
-[Claim Errors](../troubleshooting/claim-errors.md)
+[after-claim-proof.md](./after-claim-proof.md)
+
+Save proof.
+
+Optional feedback:
+
+[../templates/feedback-template.md](../templates/feedback-template.md)

@@ -1,64 +1,170 @@
 ﻿# Windows Agent Doctor
 
-This is the first command most Windows users should run.
+Windows Agent Doctor is the first command most Windows users should run.
 
-It audits your PC and tells you where to go next in this repository.
-
----
-
-## Fast run
-
-Open PowerShell and paste:
-
-```powershell
-irm https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1 | iex
-```
+It checks your PC and tells you what to do next.
 
 ---
 
 ## What it checks
 
+Doctor searches for OpenClaw agent folders and checks:
+
 ```text
+OpenClaw CLI
 agent folder
 verified-agent-identity skill
-x402-ready files
-getIdentities.js
-buildX402Payment.js
-DID output
-human link hints
+package.json
+scripts/getIdentities.js
+scripts/createNewEthereumIdentity.js
+scripts/manualLinkHumanToAgent.js
+scripts/buildX402Payment.js
+DID / identity output
+x402-ready status
 ```
 
 ---
 
 ## What it does not do
 
+Doctor does **not**:
+
 ```text
-It does not claim Tiles.
-It does not spend funds.
-It does not update skill.
-It does not delete files.
+claim Tiles
+send funds
+install anything
+update anything
+delete anything
+touch private keys manually
 ```
 
 ---
 
-## If you know your agent folder
+## Copy-paste command — public GitHub mode
 
-Clone/download mode is optional.
+Use this when the repo is public.
 
-If running the script locally:
+Open PowerShell and paste:
 
 ```powershell
-.\scripts\windows-agent-doctor.ps1 -AgentRoot "FULL_PATH_TO_YOUR_AGENT_FOLDER"
+$DoctorUrl = "https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1"
+$DoctorFile = Join-Path $env:TEMP "gn1y-windows-agent-doctor.ps1"
+
+Invoke-WebRequest -UseBasicParsing -Uri $DoctorUrl -OutFile $DoctorFile
+
+Write-Host ""
+Write-Host "Windows Agent Doctor downloaded to:"
+Write-Host $DoctorFile
+Write-Host ""
+
+notepad $DoctorFile
+
+Read-Host "Review the script in Notepad. Press Enter to run Windows Agent Doctor"
+
+powershell -NoProfile -ExecutionPolicy Bypass -File $DoctorFile
 ```
 
 ---
 
-## After it finishes
+## Copy-paste command — private/local testing mode
 
-Read the final section:
+Use this while the repo is private or while you are testing local changes.
 
-```text
-WHAT TO DO NEXT
+```powershell
+cd "$env:USERPROFILE\Desktop\quide-by-gn1y"
+.\scripts\windows-agent-doctor.ps1
 ```
 
-Then open the exact file it prints.
+---
+
+## How to read the result
+
+At the end, Doctor should print a `NEXT STEP`.
+
+Follow that exact file.
+
+Do not guess.
+
+---
+
+## If Doctor says no agent found
+
+Open:
+
+[create-agent.md](./create-agent.md)
+
+---
+
+## If Doctor says skill missing
+
+Open:
+
+[existing-agent-status.md](./existing-agent-status.md)
+
+---
+
+## If Doctor says skill outdated / not x402-ready
+
+Open:
+
+[update-identity-skill.md](./update-identity-skill.md)
+
+The key missing file is usually:
+
+```text
+scripts/buildX402Payment.js
+```
+
+---
+
+## If Doctor says identity missing
+
+Open:
+
+[existing-agent-status.md](./existing-agent-status.md)
+
+Create or restore the correct identity before claim.
+
+---
+
+## If Doctor says human link missing or unclear
+
+Open:
+
+[existing-agent-status.md](./existing-agent-status.md)
+
+Complete pairing / human link first.
+
+---
+
+## If Doctor says ready to claim
+
+Open:
+
+[free-claim-copy-paste-windows.md](./free-claim-copy-paste-windows.md)
+
+Claim only if:
+
+```text
+amount=0
+Paid: false
+correct agent
+correct identity
+correct human link
+```
+
+Stop if:
+
+```text
+10 USDC
+amount=10000000
+amount > 0
+```
+
+---
+
+## Privacy
+
+Before sharing Doctor output, read:
+
+[../PRIVACY.md](../PRIVACY.md)

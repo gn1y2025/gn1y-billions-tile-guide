@@ -8,156 +8,86 @@ This guide is unofficial. It does **not** guarantee FAIAR rewards, airdrop alloc
 
 ## Start here
 
-Open:
+Open this file first:
 
 [COMMAND_CENTER.md](./COMMAND_CENTER.md)
 
-The first step is:
+This is the main page for beginners.
+
+You do not need to understand the full repo first.
+
+The normal flow is:
 
 ```text
-Run Windows Agent Doctor
-```
-
-Agent Doctor checks your PC and tells you what file to open next.
-
----
-
-## Main flow
-
-```text
-README
--> COMMAND_CENTER
+README.md
+-> COMMAND_CENTER.md
 -> Windows Agent Doctor
--> terminal result
--> correct next guide file
+-> terminal tells you what to do next
+-> create / update / verify / claim
 ```
 
 ---
 
-## What Agent Doctor can tell you
+## What this guide helps with
+
+This guide helps you:
 
 ```text
-No agent found
--> guides/create-agent.md
-
-Agent found, no identity skill
--> guides/existing-agent-status.md Case A1
-
-Agent found, old/broken identity skill
--> guides/update-identity-skill.md
-
-Agent found, skill OK, no DID
--> guides/existing-agent-status.md Case A2
-
-Agent found, DID OK, human link needs check
--> guides/existing-agent-status.md Case A3
-
-Agent found, DID OK, x402-ready
--> guides/free-claim-copy-paste-windows.md
+find your OpenClaw agent
+check if your agent has verified-agent-identity
+check if the identity skill is x402-ready
+check if DID / identity output exists
+avoid paid claim by mistake
+claim only when free amount is 0
+save proof after a successful Tile claim
 ```
 
 ---
 
-## Main files
-
-- [Command Center](./COMMAND_CENTER.md)
-- [Start Here](./START_HERE.md)
-- [Windows Agent Doctor](./guides/windows-agent-doctor.md)
-- [Existing Agent Status Check](./guides/existing-agent-status.md)
-- [Create an OpenClaw Agent](./guides/create-agent.md)
-- [Update Identity Skill](./guides/update-identity-skill.md)
-- [Free Claim Copy-Paste Windows](./guides/free-claim-copy-paste-windows.md)
-- [Instant API Claim](./guides/instant-api-claim.md)
-- [KMS Security](./guides/kms-security.md)
-- [Paid Tile Guide](./guides/paid-tile.md)
-- [Troubleshooting](./TROUBLESHOOTING.md)
-
----
-
-## Default mode
-
-```text
-FREE CLAIM ONLY
-```
+## Main safety rules
 
 Stop immediately if you see:
 
 ```text
 10 USDC
 amount=10000000
-any amount greater than 0
+amount > 0
+wrong agent folder
+wrong identity
 wrong DID
-wrong agent address
-unverified human link
-seed phrase request
-private key request
+missing buildX402Payment.js
 ```
 
----
-
-## Repository map
+Never share:
 
 ```text
-COMMAND_CENTER.md
-README.md
-START_HERE.md
-QUICK_START.md
-SECURITY.md
-DISCLAIMER.md
-FAQ.md
-RELEASE_CHECKLIST.md
-TROUBLESHOOTING.md
-
-guides/
-  windows-agent-doctor.md
-  existing-agent-status.md
-  create-agent.md
-  update-identity-skill.md
-  free-claim-copy-paste-windows.md
-  instant-api-claim.md
-  kms-security.md
-  windows.md
-  linux.md
-  macos.md
-  agent-chat-mode.md
-  paid-tile.md
-
-scripts/
-  windows-agent-doctor.ps1
-  windows-preflight.ps1
-  windows-instant-free-claim.ps1
-  linux-preflight.sh
-  macos-preflight.sh
-
-templates/
-  proof-template.md
-  feedback-template.md
-  support-question-template.md
-
-troubleshooting/
-  windows-errors.md
-  identity-errors.md
-  pairing-errors.md
-  claim-errors.md
-  paid-claim-safety.md
+seed phrase
+private key
+kms.json
+full unredacted terminal logs
 ```
+
+Before sharing logs, read:
+
+[PRIVACY.md](./PRIVACY.md)
 
 ---
 
-## Scope
+## Beginner route
 
-This repository focuses on:
-
-```text
-OpenClaw agent
-+ Billions Verified Agent Identity
-+ human-agent link
-+ x402-ready skill check
-+ free Tiles claim preparation
-```
-
-It does not fully document ERC-8004 / 8004scan registration or custom x402 server/client SDK integration.
+1. Open [COMMAND_CENTER.md](./COMMAND_CENTER.md).
+2. Run Windows Agent Doctor.
+3. Read the `NEXT STEP` printed in the terminal.
+4. Open only the file Doctor recommends.
+5. Continue only if the guide says your agent is ready.
+6. Claim only if the payment amount is exactly `0`.
 
 ---
 
-Community guide by **gn1y**.
+## Community note
+
+This guide is created by **gn1y** as an unofficial community guide.
+
+Feedback is welcome after testing:
+
+[templates/feedback-template.md](./templates/feedback-template.md)

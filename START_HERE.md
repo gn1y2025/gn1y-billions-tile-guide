@@ -1,75 +1,43 @@
 ﻿# Start Here
 
-The easiest path is:
+The old route selector is now simplified.
+
+For beginners, start with:
+
+[COMMAND_CENTER.md](./COMMAND_CENTER.md)
+
+The correct flow is:
 
 ```text
 COMMAND_CENTER.md
+-> Windows Agent Doctor
+-> terminal tells you the next exact file
 ```
 
-Open:
+Do not guess which guide file to open.
 
-[Command Center](./COMMAND_CENTER.md)
-
-Run Windows Agent Doctor first.
+Run Doctor first unless you already know exactly what your agent status is.
 
 ---
 
-## Why Agent Doctor first?
+## Quick routes
 
-Because users can be in different states:
+If Doctor says no agent:
 
-```text
-No agent
-Agent exists but no identity skill
-Agent has old identity skill
-Agent has skill but no DID
-Agent has DID but human link is missing
-Agent is ready to claim free Tile
-```
+[guides/create-agent.md](./guides/create-agent.md)
 
-Agent Doctor checks this and prints the next file to open.
+If Doctor says skill missing / identity missing / human link missing:
 
----
+[guides/existing-agent-status.md](./guides/existing-agent-status.md)
 
-## Routes
+If Doctor says skill outdated:
 
-### Route A — I already have an agent
+[guides/update-identity-skill.md](./guides/update-identity-skill.md)
 
-Run:
+If Doctor says ready to claim:
 
-[Windows Agent Doctor](./guides/windows-agent-doctor.md)
+[guides/free-claim-copy-paste-windows.md](./guides/free-claim-copy-paste-windows.md)
 
-Then follow terminal output.
+After claim:
 
----
-
-### Route B — I do not have an agent
-
-Open:
-
-[Create an OpenClaw Agent](./guides/create-agent.md)
-
-After creation, run Agent Doctor.
-
----
-
-### Route C — Doctor says ready
-
-Open:
-
-[Free Claim Copy-Paste Windows](./guides/free-claim-copy-paste-windows.md)
-
----
-
-## Stop signs
-
-```text
-10 USDC
-amount=10000000
-any amount greater than 0
-wrong DID
-wrong agent address
-unverified human link
-private key request
-seed phrase request
-```
+[guides/after-claim-proof.md](./guides/after-claim-proof.md)

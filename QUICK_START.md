@@ -1,48 +1,35 @@
 ﻿# Quick Start
 
-Shortest path:
+For the shortest safe path, open:
 
-1. Open [COMMAND_CENTER.md](./COMMAND_CENTER.md).
-2. Run Windows Agent Doctor.
-3. Read the final terminal section: `WHAT TO DO NEXT`.
-4. Open the exact file it prints.
+[COMMAND_CENTER.md](./COMMAND_CENTER.md)
+
+Then run Windows Agent Doctor.
+
+The terminal will tell you what to do next.
 
 ---
 
-## Main command
+## Main rule
 
-```powershell
-irm https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1 | iex
+Do not claim if the payment is not free.
+
+Stop if you see:
+
+```text
+10 USDC
+amount=10000000
+amount > 0
 ```
 
 ---
 
-## If Doctor says ready
+## After success
 
-Open:
+Save proof:
 
-[Free Claim Copy-Paste Windows](./guides/free-claim-copy-paste-windows.md)
+[guides/after-claim-proof.md](./guides/after-claim-proof.md)
 
----
+Optional feedback:
 
-## If Doctor says no agent
-
-Open:
-
-[Create an OpenClaw Agent](./guides/create-agent.md)
-
----
-
-## If Doctor says update skill
-
-Open:
-
-[Update Identity Skill](./guides/update-identity-skill.md)
-
----
-
-## If Doctor says no DID / no human link
-
-Open:
-
-[Existing Agent Status Check](./guides/existing-agent-status.md)
+[templates/feedback-template.md](./templates/feedback-template.md)

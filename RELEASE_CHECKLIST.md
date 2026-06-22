@@ -1,92 +1,101 @@
 ﻿# Release Checklist
 
-Before public promotion, check:
+Use this before sharing the guide publicly.
+
+---
+
+## Required files
+
+Check that these files exist:
 
 ```text
 README.md
 COMMAND_CENTER.md
 START_HERE.md
 QUICK_START.md
+SECURITY.md
+DISCLAIMER.md
+PRIVACY.md
+FAQ.md
+TROUBLESHOOTING.md
+MANUAL_TEST_PLAN.md
 guides/windows-agent-doctor.md
-guides/existing-agent-status.md
 guides/create-agent.md
+guides/existing-agent-status.md
 guides/update-identity-skill.md
 guides/free-claim-copy-paste-windows.md
-guides/instant-api-claim.md
+guides/after-claim-proof.md
 scripts/windows-agent-doctor.ps1
 scripts/windows-instant-free-claim.ps1
+templates/feedback-template.md
 templates/proof-template.md
-troubleshooting/claim-errors.md
 ```
 
 ---
 
-## Required manual tests
+## Manual tests
 
-### Test 1 — Existing agent to successful Tile claim
-
-```text
-Run Agent Doctor
--> confirm ready
--> open free-claim-copy-paste-windows.md
--> claim free Tile
--> save proof
-```
-
-### Test 2 — New agent from zero without claim
+Run:
 
 ```text
-create OpenClaw agent
--> run Agent Doctor
--> confirm agent / skill path
--> stop before claim
+Test 1: existing agent -> Doctor -> free claim
+Test 2: new agent -> create/setup -> stop before claim
+Test 3: old skill -> Doctor sends to update skill
+Test 4: paid amount -> flow stops
+Test 5: privacy check
 ```
+
+Read:
+
+[MANUAL_TEST_PLAN.md](./MANUAL_TEST_PLAN.md)
 
 ---
 
 ## Safety checks
 
-Confirm docs warn about:
+Confirm the guide says to stop on:
 
 ```text
 10 USDC
 amount=10000000
-amount greater than 0
+amount > 0
+wrong agent
+wrong DID
+wrong human link
+missing buildX402Payment.js
+```
+
+Confirm the guide warns users never to share:
+
+```text
 seed phrase
 private key
 kms.json
-wrong DID
-wrong agent address
-unverified human link
+API keys
+unredacted logs
 ```
 
 ---
 
-## Command checks
+## Public repo requirement
 
-Confirm docs include:
+Public GitHub copy-paste commands use raw GitHub URLs.
 
-```text
-openclaw onboard --install-daemon
-openclaw gateway status
-openclaw dashboard
-openclaw agents add
-openclaw agents list --bindings
-npx clawhub@latest install verified-agent-identity
-npx skills add BillionsNetwork/verified-agent-identity
-node scripts/createNewEthereumIdentity.js
-node scripts/getIdentities.js
-node scripts/manualLinkHumanToAgent.js
-scripts/buildX402Payment.js
-```
+They work only when the repo is public.
+
+While the repo is private, use local testing mode.
 
 ---
 
-## Final rule
+## Final release condition
 
-Do not promote the guide as fully tested until:
+Do not promote as production-ready until:
 
 ```text
-windows-agent-doctor.ps1 works on a real PC
-windows-instant-free-claim.ps1 succeeds on one safe agent
+Doctor tested
+claim tested on one safe existing agent
+new agent route tested without claim
+old skill route tested
+paid amount block tested
+privacy/redaction checked
 ```
