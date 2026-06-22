@@ -129,7 +129,7 @@
                   <span>PowerShell</span>
                   <button class="copy-btn" data-copy="doctor-public">Copy</button>
                 </div>
-                <pre><code id="doctor-public">$DoctorUrl = "https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1"
+                <pre><code id="doctor-public">$DoctorUrl = "https://guide-by-gn1y.vercel.app/scripts/windows-agent-doctor.ps1"
 $DoctorFile = Join-Path $env:TEMP "gn1y-windows-agent-doctor.ps1"
 
 Invoke-WebRequest -UseBasicParsing -Uri $DoctorUrl -OutFile $DoctorFile
@@ -352,7 +352,8 @@ if ($X402) {
         <div class="section-head">
           <p class="eyebrow">Step 3</p>
           <h2>Free Tile claim</h2>
-          <p>Use this only after Doctor says the agent is ready. Claim only when the amount is exactly <code>0</code>.</p>
+          <p><strong>Free claim allowed only if <code>amount=0</code> and <code>Paid: false</code>.</strong></p>
+          <p>Use this only after Doctor says the agent is ready. Claim only when the amount is exactly <code>0</code> (<code>amount=0</code>).</p>
         </div>
 
         <div class="notice danger">
@@ -381,7 +382,7 @@ if (!(Test-Path $AgentRoot)) {
   throw "STOP: Agent folder does not exist: $AgentRoot"
 }
 
-$ClaimUrl = "https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-instant-free-claim.ps1"
+$ClaimUrl = "https://guide-by-gn1y.vercel.app/scripts/windows-instant-free-claim.ps1"
 $ClaimFile = Join-Path $env:TEMP "gn1y-windows-instant-free-claim.ps1"
 
 Invoke-WebRequest -UseBasicParsing -Uri $ClaimUrl -OutFile $ClaimFile
@@ -548,4 +549,6 @@ Notes:</code></pre>
   <script src="./assets/site.js"></script>
 </body>
 </html>
+
+
 

@@ -57,3 +57,4 @@ Thumbs.db
 
 # Screenshots with sensitive data should be reviewed manually before adding
 screenshots/private/
+.vercel

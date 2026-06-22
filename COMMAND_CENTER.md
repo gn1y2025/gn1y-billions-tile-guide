@@ -38,7 +38,7 @@ Use this when the repo is public.
 Open PowerShell and paste:
 
 ```powershell
-$DoctorUrl = "https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1"
+$DoctorUrl = "https://guide-by-gn1y.vercel.app/scripts/windows-agent-doctor.ps1"
 $DoctorFile = Join-Path $env:TEMP "gn1y-windows-agent-doctor.ps1"
 
 Invoke-WebRequest -UseBasicParsing -Uri $DoctorUrl -OutFile $DoctorFile
@@ -173,3 +173,4 @@ Before posting Doctor output in Discord, GitHub, Telegram, or X, read:
 [PRIVACY.md](./PRIVACY.md)
 
 Redact anything you do not want public.
+

