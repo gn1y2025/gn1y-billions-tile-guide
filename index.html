@@ -1,0 +1,606 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>gn1y Billions AI Agentic Movie Tile Guide</title>
+  <meta name="description" content="Safety-first community guide for OpenClaw agents and Billions AI Agentic Movie Tiles. Run Agent Doctor, create or verify an agent, update x402 identity skill, and claim a free Tile safely." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="stylesheet" href="./assets/site.css" />
+</head>
+<body>
+  <a class="skip-link" href="#start">Skip to guide</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Go to top">
+        <span class="brand-mark">g</span>
+        <span>
+          <strong>gn1y Tile Guide</strong>
+          <small>OpenClaw → Billions Tiles</small>
+        </span>
+      </a>
+
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="#start">Start</a>
+        <a href="#doctor">Doctor</a>
+        <a href="#routes">Routes</a>
+        <a href="#claim">Claim</a>
+        <a href="#safety">Safety</a>
+        <a href="#deploy">Deploy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Safety-first community guide</p>
+          <h1>Claim Billions AI Agentic Movie Tiles with a clear beginner flow.</h1>
+          <p class="hero-text">
+            This guide helps a beginner create or check an OpenClaw agent, verify the Billions identity skill,
+            confirm x402 readiness, avoid paid claims by mistake, and claim a free Tile only when the amount is exactly zero.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn primary" href="#doctor">Run Windows Agent Doctor</a>
+            <a class="btn ghost" href="#routes">See all routes</a>
+          </div>
+
+          <div class="notice soft">
+            <strong>Unofficial guide.</strong>
+            This guide does not guarantee FAIAR rewards, airdrop allocation, leaderboard rewards, free tile eligibility,
+            or any future token distribution.
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Beginner flow summary">
+          <div class="panel-title">Beginner flow</div>
+          <ol class="flow-list">
+            <li><span>1</span>Open this site</li>
+            <li><span>2</span>Run Windows Agent Doctor</li>
+            <li><span>3</span>Read the terminal result</li>
+            <li><span>4</span>Open the recommended route</li>
+            <li><span>5</span>Claim only if amount is 0</li>
+            <li><span>6</span>Save proof and feedback</li>
+          </ol>
+        </aside>
+      </div>
+    </section>
+
+    <section id="start" class="section">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Start here</p>
+          <h2>Do not guess. Let the terminal choose your next step.</h2>
+          <p>
+            The safest beginner path is to run Windows Agent Doctor first. It checks your PC and prints a clear
+            <code>NEXT STEP</code> at the end.
+          </p>
+        </div>
+
+        <div class="cards four">
+          <article class="card">
+            <span class="card-icon">01</span>
+            <h3>Audit</h3>
+            <p>Find the agent folder and check OpenClaw / identity / x402 readiness.</p>
+          </article>
+          <article class="card">
+            <span class="card-icon">02</span>
+            <h3>Repair route</h3>
+            <p>If something is missing, Doctor sends the user to the correct guide section.</p>
+          </article>
+          <article class="card">
+            <span class="card-icon">03</span>
+            <h3>Free claim gate</h3>
+            <p>Continue only when the agent is ready and the payment amount is exactly 0.</p>
+          </article>
+          <article class="card">
+            <span class="card-icon">04</span>
+            <h3>Proof</h3>
+            <p>After success, save Tile ID, canvas, coordinates, tx hash, and proof notes.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="doctor" class="section alt">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Step 1</p>
+          <h2>Windows Agent Doctor</h2>
+          <p>
+            Agent Doctor does not claim Tiles, does not install anything, does not update anything, and does not touch private keys.
+            It only checks your setup and prints what to do next.
+          </p>
+        </div>
+
+        <div class="accordion">
+          <details open>
+            <summary>
+              <span>Copy-paste command — public GitHub mode</span>
+              <small>Best for users opening the website/repo online</small>
+            </summary>
+            <div class="details-body">
+              <p>This downloads the Doctor script, opens it in Notepad for review, then runs it.</p>
+
+              <div class="code-card">
+                <div class="code-head">
+                  <span>PowerShell</span>
+                  <button class="copy-btn" data-copy="doctor-public">Copy</button>
+                </div>
+                <pre><code id="doctor-public">$DoctorUrl = "https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1"
+$DoctorFile = Join-Path $env:TEMP "gn1y-windows-agent-doctor.ps1"
+
+Invoke-WebRequest -UseBasicParsing -Uri $DoctorUrl -OutFile $DoctorFile
+
+Write-Host ""
+Write-Host "Windows Agent Doctor downloaded to:"
+Write-Host $DoctorFile
+Write-Host ""
+
+notepad $DoctorFile
+
+Read-Host "Review the script in Notepad. Press Enter to run Windows Agent Doctor"
+
+powershell -NoProfile -ExecutionPolicy Bypass -File $DoctorFile</code></pre>
+              </div>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              <span>Copy-paste command — private/local testing mode</span>
+              <small>Use while the repo is private or while testing local changes</small>
+            </summary>
+            <div class="details-body">
+              <div class="code-card">
+                <div class="code-head">
+                  <span>PowerShell</span>
+                  <button class="copy-btn" data-copy="doctor-local">Copy</button>
+                </div>
+                <pre><code id="doctor-local">cd "$env:USERPROFILE\Desktop\quide-by-gn1y"
+.\scripts\windows-agent-doctor.ps1</code></pre>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="routes" class="section">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Step 2</p>
+          <h2>Follow the route printed by Doctor</h2>
+          <p>At the end of the audit, the terminal should tell the user exactly which route to open.</p>
+        </div>
+
+        <div class="route-grid">
+          <article class="route-card">
+            <h3>No agent found</h3>
+            <p>Open the create-agent guide and create an OpenClaw agent from zero.</p>
+            <a href="./guides/create-agent.md">guides/create-agent.md</a>
+          </article>
+
+          <article class="route-card">
+            <h3>Identity skill missing</h3>
+            <p>Install or repair <code>verified-agent-identity</code> before any Tile claim.</p>
+            <a href="./guides/existing-agent-status.md">guides/existing-agent-status.md</a>
+          </article>
+
+          <article class="route-card warning">
+            <h3>Skill outdated</h3>
+            <p>If <code>scripts/buildX402Payment.js</code> is missing, the skill is not x402-ready.</p>
+            <a href="./guides/update-identity-skill.md">guides/update-identity-skill.md</a>
+          </article>
+
+          <article class="route-card">
+            <h3>Identity / human link missing</h3>
+            <p>Create identity, check DID, and link the correct Billions human account first.</p>
+            <a href="./guides/existing-agent-status.md">guides/existing-agent-status.md</a>
+          </article>
+
+          <article class="route-card success">
+            <h3>Ready to claim</h3>
+            <p>Proceed only if the correct agent, DID, human link, and x402-ready skill are confirmed.</p>
+            <a href="./guides/free-claim-copy-paste-windows.md">guides/free-claim-copy-paste-windows.md</a>
+          </article>
+
+          <article class="route-card">
+            <h3>After success</h3>
+            <p>Save proof and share feedback without private logs.</p>
+            <a href="./guides/after-claim-proof.md">guides/after-claim-proof.md</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="create" class="section alt">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Create / verify</p>
+          <h2>Core terminal commands</h2>
+          <p>These menus are for users who already understand which route Doctor selected.</p>
+        </div>
+
+        <div class="accordion">
+          <details>
+            <summary>
+              <span>Create or open OpenClaw setup</span>
+              <small>Use when Doctor says no agent was found</small>
+            </summary>
+            <div class="details-body">
+              <p>Use the detailed file first: <a href="./guides/create-agent.md">guides/create-agent.md</a>.</p>
+              <div class="code-card">
+                <div class="code-head">
+                  <span>PowerShell</span>
+                  <button class="copy-btn" data-copy="create-agent">Copy</button>
+                </div>
+                <pre><code id="create-agent">openclaw onboard --install-daemon
+openclaw gateway status
+openclaw dashboard
+openclaw agents add
+openclaw agents list --bindings</code></pre>
+              </div>
+              <p class="small-note">If a command opens an interactive prompt, follow OpenClaw prompts and keep your agent name/provider unique.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              <span>Find and check identity skill</span>
+              <small>Use when your agent folder exists</small>
+            </summary>
+            <div class="details-body">
+              <div class="code-card">
+                <div class="code-head">
+                  <span>PowerShell</span>
+                  <button class="copy-btn" data-copy="check-identity">Copy</button>
+                </div>
+                <pre><code id="check-identity">$AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
+
+if (!(Test-Path $AgentRoot)) {
+  throw "STOP: Agent folder does not exist: $AgentRoot"
+}
+
+$SkillDir = Get-ChildItem -Path $AgentRoot -Directory -Recurse -Filter "verified-agent-identity" |
+  Select-Object -First 1 -ExpandProperty FullName
+
+if (!$SkillDir) {
+  throw "STOP: verified-agent-identity skill was not found. Open guides/existing-agent-status.md"
+}
+
+Set-Location $SkillDir
+
+npm install
+
+node scripts\getIdentities.js</code></pre>
+              </div>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              <span>Create identity / link human account</span>
+              <small>Use only if Doctor says identity or human link is missing</small>
+            </summary>
+            <div class="details-body">
+              <p>Use the detailed file first: <a href="./guides/existing-agent-status.md">guides/existing-agent-status.md</a>.</p>
+              <div class="code-card">
+                <div class="code-head">
+                  <span>PowerShell</span>
+                  <button class="copy-btn" data-copy="link-human">Copy</button>
+                </div>
+                <pre><code id="link-human">$AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
+
+$SkillDir = Get-ChildItem -Path $AgentRoot -Directory -Recurse -Filter "verified-agent-identity" |
+  Select-Object -First 1 -ExpandProperty FullName
+
+if (!$SkillDir) {
+  throw "STOP: verified-agent-identity skill was not found."
+}
+
+Set-Location $SkillDir
+
+npm install
+
+node scripts\getIdentities.js
+
+# Use only if no identity exists:
+node scripts\createNewEthereumIdentity.js
+
+# Use only if identity exists but human account is not linked:
+node scripts\manualLinkHumanToAgent.js</code></pre>
+              </div>
+              <p class="danger-text">Do not create a new identity if the correct identity already exists. Do not copy identity files from another agent.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              <span>Check x402-ready skill marker</span>
+              <small>Required before Tiles claim</small>
+            </summary>
+            <div class="details-body">
+              <div class="code-card">
+                <div class="code-head">
+                  <span>PowerShell</span>
+                  <button class="copy-btn" data-copy="x402-marker">Copy</button>
+                </div>
+                <pre><code id="x402-marker">$AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
+
+$X402 = Get-ChildItem -Path $AgentRoot -Recurse -File -Filter "buildX402Payment.js" |
+  Select-Object -First 1 -ExpandProperty FullName
+
+if ($X402) {
+  Write-Host "OK: x402-ready marker found:"
+  Write-Host $X402
+} else {
+  Write-Host "STOP: buildX402Payment.js missing."
+  Write-Host "Open guides/update-identity-skill.md before claim."
+}</code></pre>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="claim" class="section">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Step 3</p>
+          <h2>Free Tile claim</h2>
+          <p>Use this only after Doctor says the agent is ready. Claim only when the amount is exactly <code>0</code>.</p>
+        </div>
+
+        <div class="notice danger">
+          <strong>Stop immediately if you see:</strong>
+          <span>10 USDC</span>
+          <span>amount=10000000</span>
+          <span>amount &gt; 0</span>
+          <span>wrong agent</span>
+          <span>wrong DID</span>
+        </div>
+
+        <div class="accordion">
+          <details open>
+            <summary>
+              <span>Free claim command — public GitHub mode</span>
+              <small>Downloads the claim script, opens it for review, then runs it</small>
+            </summary>
+            <div class="details-body">
+              <div class="code-card">
+                <div class="code-head">
+                  <span>PowerShell</span>
+                  <button class="copy-btn" data-copy="claim-public">Copy</button>
+                </div>
+                <pre><code id="claim-public">$AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
+if (!(Test-Path $AgentRoot)) {
+  throw "STOP: Agent folder does not exist: $AgentRoot"
+}
+
+$ClaimUrl = "https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-instant-free-claim.ps1"
+$ClaimFile = Join-Path $env:TEMP "gn1y-windows-instant-free-claim.ps1"
+
+Invoke-WebRequest -UseBasicParsing -Uri $ClaimUrl -OutFile $ClaimFile
+
+Write-Host ""
+Write-Host "Claim script downloaded to:"
+Write-Host $ClaimFile
+Write-Host ""
+
+notepad $ClaimFile
+
+Read-Host "Review the script in Notepad. Press Enter to run FREE Tile claim"
+
+powershell -NoProfile -ExecutionPolicy Bypass -File $ClaimFile -AgentRoot $AgentRoot -Intent "AI agent movie tile claim"
+
+if ($?) {
+  Write-Host ""
+  Write-Host "------------------------------------------------------------"
+  Write-Host "Claim command finished without a PowerShell error."
+  Write-Host "If the output above shows Tile claimed / Paid false / amount 0:"
+  Write-Host ""
+  Write-Host "SUCCESS: Free Tile claim flow completed."
+  Write-Host "Community guide by gn1y."
+  Write-Host "Feedback is welcome:"
+  Write-Host "https://github.com/gn1y2025/gn1y-billions-tile-guide"
+  Write-Host "------------------------------------------------------------"
+}</code></pre>
+              </div>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              <span>Free claim command — private/local testing mode</span>
+              <small>Use while testing the local cloned repo</small>
+            </summary>
+            <div class="details-body">
+              <div class="code-card">
+                <div class="code-head">
+                  <span>PowerShell</span>
+                  <button class="copy-btn" data-copy="claim-local">Copy</button>
+                </div>
+                <pre><code id="claim-local">cd "$env:USERPROFILE\Desktop\quide-by-gn1y"
+
+$AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
+if (!(Test-Path $AgentRoot)) {
+  throw "STOP: Agent folder does not exist: $AgentRoot"
+}
+
+.\scripts\windows-instant-free-claim.ps1 -AgentRoot $AgentRoot -Intent "AI agent movie tile claim"
+
+if ($?) {
+  Write-Host ""
+  Write-Host "------------------------------------------------------------"
+  Write-Host "Claim command finished without a PowerShell error."
+  Write-Host "If the output above shows Tile claimed / Paid false / amount 0:"
+  Write-Host ""
+  Write-Host "SUCCESS: Free Tile claim flow completed."
+  Write-Host "Community guide by gn1y."
+  Write-Host "Feedback is welcome:"
+  Write-Host "templates/feedback-template.md"
+  Write-Host "------------------------------------------------------------"
+}</code></pre>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="proof" class="section alt">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Step 4</p>
+          <h2>Save proof after success</h2>
+          <p>After a successful claim, save the result. Do not rely only on memory or screenshots.</p>
+        </div>
+
+        <div class="code-card">
+          <div class="code-head">
+            <span>Proof template</span>
+            <button class="copy-btn" data-copy="proof-template">Copy</button>
+          </div>
+          <pre><code id="proof-template">Agent name:
+Agent folder:
+Agent address:
+DID:
+Tile ID:
+Canvas ID:
+Coordinates:
+Paid:
+Amount:
+Tx hash:
+Claim date:
+Explorer link:
+Notes:</code></pre>
+        </div>
+
+        <div class="notice soft">
+          <strong>Optional:</strong>
+          If this guide helped, use <a href="./templates/feedback-template.md">templates/feedback-template.md</a>.
+          Community guide by <strong>gn1y</strong>.
+        </div>
+      </div>
+    </section>
+
+    <section id="safety" class="section">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Safety</p>
+          <h2>Security rules for beginners</h2>
+          <p>The guide is designed to avoid accidental paid claims and private data leaks.</p>
+        </div>
+
+        <div class="cards two">
+          <article class="card danger-card">
+            <h3>Never share</h3>
+            <ul class="check-list bad">
+              <li>seed phrase</li>
+              <li>private key</li>
+              <li>kms.json</li>
+              <li>API keys</li>
+              <li>full unredacted terminal logs</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Redact before posting logs</h3>
+            <ul class="check-list">
+              <li>local Windows username</li>
+              <li>local folder paths</li>
+              <li>DID / publicKeyHex if you want privacy</li>
+              <li>wallet addresses if you want privacy</li>
+              <li>tx hashes if you want privacy</li>
+            </ul>
+          </article>
+        </div>
+
+        <p class="center-link">
+          Read full privacy guide:
+          <a href="./PRIVACY.md">PRIVACY.md</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="deploy" class="section alt">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Vercel</p>
+          <h2>Deploy this guide website</h2>
+          <p>The site is static: <code>index.html</code>, <code>assets/site.css</code>, and <code>assets/site.js</code>.</p>
+        </div>
+
+        <div class="accordion">
+          <details open>
+            <summary>
+              <span>Deploy from local repo with Vercel CLI</span>
+              <small>Use after files are committed and pushed</small>
+            </summary>
+            <div class="details-body">
+              <div class="code-card">
+                <div class="code-head">
+                  <span>PowerShell</span>
+                  <button class="copy-btn" data-copy="deploy-vercel">Copy</button>
+                </div>
+                <pre><code id="deploy-vercel">cd "$env:USERPROFILE\Desktop\quide-by-gn1y"
+
+npm i -g vercel
+
+vercel login
+
+vercel
+
+# After preview looks good:
+vercel --prod</code></pre>
+              </div>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              <span>Deploy from Vercel dashboard</span>
+              <small>Recommended for automatic deploys after GitHub push</small>
+            </summary>
+            <div class="details-body">
+              <ol class="numbered">
+                <li>Open Vercel dashboard.</li>
+                <li>Import GitHub repository <code>gn1y-billions-tile-guide</code>.</li>
+                <li>Keep framework preset as static / no framework if asked.</li>
+                <li>Build command: leave empty.</li>
+                <li>Output directory: leave empty.</li>
+                <li>Deploy.</li>
+              </ol>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <strong>gn1y Billions AI Agentic Movie Tile Guide</strong>
+        <p>Unofficial safety-first community guide. No rewards or eligibility are guaranteed.</p>
+      </div>
+      <div class="footer-links">
+        <a href="./README.md">README</a>
+        <a href="./COMMAND_CENTER.md">Command Center</a>
+        <a href="./SECURITY.md">Security</a>
+        <a href="./PRIVACY.md">Privacy</a>
+        <a href="./MANUAL_TEST_PLAN.md">Manual tests</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" role="status" aria-live="polite" hidden>Copied</div>
+
+  <script src="./assets/site.js"></script>
+</body>
+</html>
