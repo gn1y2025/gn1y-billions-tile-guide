@@ -27,7 +27,6 @@
         <a href="#routes">Routes</a>
         <a href="#claim">Claim</a>
         <a href="#safety">Safety</a>
-        <a href="#deploy">Deploy</a>
       </nav>
     </div>
   </header>
@@ -527,60 +526,6 @@ Notes:</code></pre>
         </p>
       </div>
     </section>
-
-    <section id="deploy" class="section alt">
-      <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Vercel</p>
-          <h2>Deploy this guide website</h2>
-          <p>The site is static: <code>index.html</code>, <code>assets/site.css</code>, and <code>assets/site.js</code>.</p>
-        </div>
-
-        <div class="accordion">
-          <details open>
-            <summary>
-              <span>Deploy from local repo with Vercel CLI</span>
-              <small>Use after files are committed and pushed</small>
-            </summary>
-            <div class="details-body">
-              <div class="code-card">
-                <div class="code-head">
-                  <span>PowerShell</span>
-                  <button class="copy-btn" data-copy="deploy-vercel">Copy</button>
-                </div>
-                <pre><code id="deploy-vercel">cd "$env:USERPROFILE\Desktop\quide-by-gn1y"
-
-npm i -g vercel
-
-vercel login
-
-vercel
-
-# After preview looks good:
-vercel --prod</code></pre>
-              </div>
-            </div>
-          </details>
-
-          <details>
-            <summary>
-              <span>Deploy from Vercel dashboard</span>
-              <small>Recommended for automatic deploys after GitHub push</small>
-            </summary>
-            <div class="details-body">
-              <ol class="numbered">
-                <li>Open Vercel dashboard.</li>
-                <li>Import GitHub repository <code>gn1y-billions-tile-guide</code>.</li>
-                <li>Keep framework preset as static / no framework if asked.</li>
-                <li>Build command: leave empty.</li>
-                <li>Output directory: leave empty.</li>
-                <li>Deploy.</li>
-              </ol>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer class="site-footer">
@@ -594,7 +539,6 @@ vercel --prod</code></pre>
         <a href="./COMMAND_CENTER.md">Command Center</a>
         <a href="./SECURITY.md">Security</a>
         <a href="./PRIVACY.md">Privacy</a>
-        <a href="./MANUAL_TEST_PLAN.md">Manual tests</a>
       </div>
     </div>
   </footer>
@@ -604,3 +548,4 @@ vercel --prod</code></pre>
   <script src="./assets/site.js"></script>
 </body>
 </html>
+
