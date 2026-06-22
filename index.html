@@ -118,8 +118,8 @@
         <div class="accordion">
           <details open>
             <summary>
-              <span>Copy-paste command — public GitHub mode</span>
-              <small>Best for users opening the website/repo online</small>
+              <span>Copy-paste command — recommended</span>
+              <small>Recommended for all users</small>
             </summary>
             <div class="details-body">
               <p>This downloads the Doctor script, opens it in Notepad for review, then runs it.</p>
@@ -144,23 +144,6 @@ notepad $DoctorFile
 Read-Host "Review the script in Notepad. Press Enter to run Windows Agent Doctor"
 
 powershell -NoProfile -ExecutionPolicy Bypass -File $DoctorFile</code></pre>
-              </div>
-            </div>
-          </details>
-
-          <details>
-            <summary>
-              <span>Copy-paste command — private/local testing mode</span>
-              <small>Use while the repo is private or while testing local changes</small>
-            </summary>
-            <div class="details-body">
-              <div class="code-card">
-                <div class="code-head">
-                  <span>PowerShell</span>
-                  <button class="copy-btn" data-copy="doctor-local">Copy</button>
-                </div>
-                <pre><code id="doctor-local">cd "$env:USERPROFILE\Desktop\quide-by-gn1y"
-.\scripts\windows-agent-doctor.ps1</code></pre>
               </div>
             </div>
           </details>
@@ -549,6 +532,7 @@ Notes:</code></pre>
   <script src="./assets/site.js"></script>
 </body>
 </html>
+
 
 
 
