@@ -47,9 +47,9 @@ Paid: false
 
 ---
 
-## Public GitHub mode
+## Recommended command
 
-Use this when the repo is public.
+Use this from the public website.
 
 Open PowerShell and paste:
 
@@ -91,33 +91,6 @@ if ($?) {
 
 ---
 
-## Private/local testing mode
-
-Use this while testing your own cloned repo.
-
-```powershell
-cd "$env:USERPROFILE\Desktop\quide-by-gn1y"
-
-$AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
-if (!(Test-Path $AgentRoot)) {
-  throw "STOP: Agent folder does not exist: $AgentRoot"
-}
-
-.\scripts\windows-instant-free-claim.ps1 -AgentRoot $AgentRoot -Intent "AI agent movie tile claim"
-
-if ($?) {
-  Write-Host ""
-  Write-Host "------------------------------------------------------------"
-  Write-Host "Claim command finished without a PowerShell error."
-  Write-Host "If the output above shows Tile claimed / Paid false / amount 0:"
-  Write-Host ""
-  Write-Host "SUCCESS: Free Tile claim flow completed."
-  Write-Host "Community guide by gn1y."
-  Write-Host "Feedback is welcome:"
-  Write-Host "templates/feedback-template.md"
-  Write-Host "------------------------------------------------------------"
-}
-```
 
 ---
 
@@ -132,4 +105,5 @@ Save proof.
 Optional feedback:
 
 [../templates/feedback-template.md](../templates/feedback-template.md)
+
 

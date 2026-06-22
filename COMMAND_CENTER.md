@@ -31,9 +31,9 @@ It only checks and prints a result.
 
 ---
 
-## Copy-paste command — public GitHub mode
+## Copy-paste command — recommended
 
-Use this when the repo is public.
+Use this from the public website.
 
 Open PowerShell and paste:
 
@@ -59,14 +59,6 @@ If PowerShell cannot download the file, the repo may still be private. Use local
 
 ---
 
-## Copy-paste command — private/local testing mode
-
-Use this while testing your own cloned repo.
-
-```powershell
-cd "$env:USERPROFILE\Desktop\quide-by-gn1y"
-.\scripts\windows-agent-doctor.ps1
-```
 
 ---
 
@@ -173,4 +165,5 @@ Before posting Doctor output in Discord, GitHub, Telegram, or X, read:
 [PRIVACY.md](./PRIVACY.md)
 
 Redact anything you do not want public.
+
 

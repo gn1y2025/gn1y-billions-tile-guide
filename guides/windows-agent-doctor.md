@@ -42,9 +42,9 @@ touch private keys manually
 
 ---
 
-## Copy-paste command — public GitHub mode
+## Copy-paste command — recommended
 
-Use this when the repo is public.
+Use this from the public website.
 
 Open PowerShell and paste:
 
@@ -68,14 +68,6 @@ powershell -NoProfile -ExecutionPolicy Bypass -File $DoctorFile
 
 ---
 
-## Copy-paste command — private/local testing mode
-
-Use this while the repo is private or while you are testing local changes.
-
-```powershell
-cd "$env:USERPROFILE\Desktop\quide-by-gn1y"
-.\scripts\windows-agent-doctor.ps1
-```
 
 ---
 
@@ -170,5 +162,6 @@ amount > 0
 Before sharing Doctor output, read:
 
 [../PRIVACY.md](../PRIVACY.md)
+
 
 

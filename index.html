@@ -351,8 +351,8 @@ if ($X402) {
         <div class="accordion">
           <details open>
             <summary>
-              <span>Free claim command — public GitHub mode</span>
-              <small>Downloads the claim script, opens it for review, then runs it</small>
+              <span>Free claim command — recommended</span>
+              <small>Downloads the claim script from this website, opens it for review, then runs it</small>
             </summary>
             <div class="details-body">
               <div class="code-card">
@@ -391,42 +391,6 @@ if ($?) {
   Write-Host "Community guide by gn1y."
   Write-Host "Feedback is welcome:"
   Write-Host "https://github.com/gn1y2025/gn1y-billions-tile-guide"
-  Write-Host "------------------------------------------------------------"
-}</code></pre>
-              </div>
-            </div>
-          </details>
-
-          <details>
-            <summary>
-              <span>Free claim command — private/local testing mode</span>
-              <small>Use while testing the local cloned repo</small>
-            </summary>
-            <div class="details-body">
-              <div class="code-card">
-                <div class="code-head">
-                  <span>PowerShell</span>
-                  <button class="copy-btn" data-copy="claim-local">Copy</button>
-                </div>
-                <pre><code id="claim-local">cd "$env:USERPROFILE\Desktop\quide-by-gn1y"
-
-$AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
-if (!(Test-Path $AgentRoot)) {
-  throw "STOP: Agent folder does not exist: $AgentRoot"
-}
-
-.\scripts\windows-instant-free-claim.ps1 -AgentRoot $AgentRoot -Intent "AI agent movie tile claim"
-
-if ($?) {
-  Write-Host ""
-  Write-Host "------------------------------------------------------------"
-  Write-Host "Claim command finished without a PowerShell error."
-  Write-Host "If the output above shows Tile claimed / Paid false / amount 0:"
-  Write-Host ""
-  Write-Host "SUCCESS: Free Tile claim flow completed."
-  Write-Host "Community guide by gn1y."
-  Write-Host "Feedback is welcome:"
-  Write-Host "templates/feedback-template.md"
   Write-Host "------------------------------------------------------------"
 }</code></pre>
               </div>
@@ -532,6 +496,7 @@ Notes:</code></pre>
   <script src="./assets/site.js"></script>
 </body>
 </html>
+
 
 
 

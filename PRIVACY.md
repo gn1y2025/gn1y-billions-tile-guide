@@ -82,3 +82,11 @@ I need help with the update step.
 ```
 
 Do not paste full raw logs unless you redacted them first.
+
+---
+
+## Unredacted logs warning
+
+Do not share unredacted logs publicly.
+
+Before posting terminal output in Discord, GitHub, Telegram, X, or any public chat, redact local paths, DID, publicKeyHex, wallet addresses, agent names, and any account-linked data.
