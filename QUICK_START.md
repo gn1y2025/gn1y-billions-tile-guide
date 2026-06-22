@@ -1,89 +1,48 @@
 ﻿# Quick Start
 
-Use this file only if you want the shortest route.
+Shortest path:
 
-For the full route selector, open:
-
-[START_HERE.md](./START_HERE.md)
+1. Open [COMMAND_CENTER.md](./COMMAND_CENTER.md).
+2. Run Windows Agent Doctor.
+3. Read the final terminal section: `WHAT TO DO NEXT`.
+4. Open the exact file it prints.
 
 ---
 
-## I already have an OpenClaw agent
+## Main command
+
+```powershell
+irm https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1 | iex
+```
+
+---
+
+## If Doctor says ready
 
 Open:
 
-[Existing Agent Status Check](./guides/existing-agent-status.md)
-
-Do not reinstall skill, create identity, or relink human blindly.
-
-First check what already exists.
+[Free Claim Copy-Paste Windows](./guides/free-claim-copy-paste-windows.md)
 
 ---
 
-## I do not have an agent yet
+## If Doctor says no agent
 
 Open:
 
 [Create an OpenClaw Agent](./guides/create-agent.md)
 
-Then continue:
+---
 
-[Existing Agent Status Check](./guides/existing-agent-status.md)
+## If Doctor says update skill
+
+Open:
+
+[Update Identity Skill](./guides/update-identity-skill.md)
 
 ---
 
-## My agent already has DID + human link
+## If Doctor says no DID / no human link
 
 Open:
 
 [Existing Agent Status Check](./guides/existing-agent-status.md)
-
-Confirm:
-
-```text
-DID exists
-default identity is correct
-human link is verified
-agent address is correct
-```
-
-Then open:
-
-[Instant API Claim](./guides/instant-api-claim.md)
-
----
-
-## Emergency stop signs
-
-Stop immediately if you see:
-
-```text
-10 USDC
-amount=10000000
-any amount greater than 0
-seed phrase request
-private key request
-wrong DID
-wrong agent address
-unverified human link
-unknown pairing link
-```
-
----
-
-## OS guides
-
-Use these only after choosing the correct route:
-
-- [Windows Guide](./guides/windows.md)
-- [Linux Guide](./guides/linux.md)
-- [macOS Guide](./guides/macos.md)
-
----
-
-## Safety
-
-- [KMS Security](./guides/kms-security.md)
-- [Security](./SECURITY.md)
-- [Paid Tile Guide](./guides/paid-tile.md)
-- [Troubleshooting](./TROUBLESHOOTING.md)

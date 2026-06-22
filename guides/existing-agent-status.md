@@ -1,5 +1,20 @@
 ﻿# Existing Agent Status Check
 
+Recommended first step: Agent Doctor.
+
+Open:
+
+[Windows Agent Doctor](./windows-agent-doctor.md)
+
+or run:
+
+```powershell
+irm https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1 | iex
+```
+
+Then follow the terminal output.
+
+---
 Use this guide if you already have an OpenClaw agent.
 
 The goal is to detect the current state of the agent before doing anything risky.
@@ -294,3 +309,4 @@ Stop immediately if:
 When unsure:
 
 **STOP and ask for help.**
+
