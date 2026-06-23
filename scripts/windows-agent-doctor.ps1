@@ -9,40 +9,40 @@ function Line {
   Write-Host "------------------------------------------------------------"
 }
 
-function Title($Text) {
+function Title([string]$Text) {
   Write-Host ""
   Line
   Write-Host $Text
   Line
 }
 
-function Good($Text) {
+function Good([string]$Text) {
   Write-Host "[OK] $Text"
 }
 
-function Bad($Text) {
+function Bad([string]$Text) {
   Write-Host "[MISSING] $Text"
 }
 
-function Warn($Text) {
+function Warn([string]$Text) {
   Write-Host "[CHECK] $Text"
 }
 
-function Info($Text) {
+function Info([string]$Text) {
   Write-Host "[INFO] $Text"
 }
 
-function Test-ExistingFile($Path, $Label) {
+function Test-ExistingFile([string]$Path, [string]$Label) {
   if (Test-Path $Path) {
     Good $Label
     return $true
-  } else {
-    Bad $Label
-    return $false
   }
+
+  Bad $Label
+  return $false
 }
 
-function Find-SkillFolders($Root) {
+function Find-SkillFolders([string]$Root) {
   if (!(Test-Path $Root)) {
     return @()
   }
@@ -54,9 +54,7 @@ function Find-SkillFolders($Root) {
   }
 }
 
-function Guess-AgentRootFromSkill($SkillPath) {
-  $full = $SkillPath
-
+function Guess-AgentRootFromSkill([string]$SkillPath) {
   $markers = @(
     "\.agents\skills\verified-agent-identity",
     "\openclaw-home\.openclaw\workspace\skills\verified-agent-identity",
@@ -64,13 +62,13 @@ function Guess-AgentRootFromSkill($SkillPath) {
   )
 
   foreach ($m in $markers) {
-    $idx = $full.IndexOf($m, [System.StringComparison]::OrdinalIgnoreCase)
+    $idx = $SkillPath.IndexOf($m, [System.StringComparison]::OrdinalIgnoreCase)
     if ($idx -gt 0) {
-      return $full.Substring(0, $idx)
+      return $SkillPath.Substring(0, $idx)
     }
   }
 
-  return (Split-Path (Split-Path $full -Parent) -Parent)
+  return (Split-Path (Split-Path $SkillPath -Parent) -Parent)
 }
 
 function Add-UniquePath([System.Collections.Generic.List[string]]$List, [string]$Path) {
@@ -93,7 +91,7 @@ function Add-UniquePath([System.Collections.Generic.List[string]]$List, [string]
   }
 }
 
-function Assess-Agent($Root) {
+function Assess-Agent([string]$Root) {
   Title "AGENT CHECK: $Root"
 
   $result = [ordered]@{
@@ -107,7 +105,6 @@ function Assess-Agent($Root) {
     HasBuildX402 = $false
     DidDetected = $false
     HumanLinkHint = $false
-    IdentityOutput = ""
     Status = "UNKNOWN"
     NextFile = ""
   }
@@ -126,12 +123,12 @@ function Assess-Agent($Root) {
   if ($skillFolders.Count -eq 0) {
     Bad "verified-agent-identity skill folder not found"
     $result.Status = "NO_IDENTITY_SKILL"
-    $result.NextFile = "guides/existing-agent-status.md -> Case A1 — Skill missing"
+    $result.NextFile = "guides/existing-agent-status.md -> Case A1 - Skill missing"
     return [PSCustomObject]$result
   }
 
   if ($skillFolders.Count -gt 1) {
-    Warn "Multiple verified-agent-identity folders found. Using the first x402-looking one if possible."
+    Warn "Multiple verified-agent-identity folders found. Using the first x402-ready looking one if possible."
     foreach ($s in $skillFolders) {
       Info $s.FullName
     }
@@ -163,14 +160,14 @@ function Assess-Agent($Root) {
   $result.HasManualLink = Test-ExistingFile $manualLink "scripts/manualLinkHumanToAgent.js"
   $result.HasBuildX402 = Test-ExistingFile $buildX402 "scripts/buildX402Payment.js"
 
-  if ($result.HasBuildX402) {
-    Good "Skill status: X402 READY marker found"
-  } else {
+  if (!$result.HasBuildX402) {
     Bad "Skill status: OUTDATED / NOT X402 READY"
     $result.Status = "UPDATE_SKILL_FIRST"
     $result.NextFile = "guides/update-identity-skill.md"
     return [PSCustomObject]$result
   }
+
+  Good "Skill status: X402 READY marker found"
 
   if (!$result.HasGetIdentities) {
     Bad "Cannot check identity because getIdentities.js is missing"
@@ -180,6 +177,7 @@ function Assess-Agent($Root) {
   }
 
   $node = Get-Command node -ErrorAction SilentlyContinue
+
   if (!$node) {
     Bad "Node.js not found"
     $result.Status = "NODE_MISSING"
@@ -195,7 +193,6 @@ function Assess-Agent($Root) {
   Pop-Location
 
   $identityText = ($identityRaw | Out-String)
-  $result.IdentityOutput = $identityText
 
   if ($exitCode -ne 0) {
     Bad "getIdentities.js failed"
@@ -207,17 +204,16 @@ function Assess-Agent($Root) {
 
   Write-Host $identityText
 
-  $didMatches = [regex]::Matches($identityText, "did:")
-  $result.DidDetected = ($didMatches.Count -gt 0 -or $identityText -match '"did"\s*:')
+  $result.DidDetected = ($identityText -match "did:" -or $identityText -match '"did"\s*:')
 
-  if ($result.DidDetected) {
-    Good "DID detected"
-  } else {
+  if (!$result.DidDetected) {
     Bad "No DID detected"
     $result.Status = "NO_DID"
-    $result.NextFile = "guides/existing-agent-status.md -> Case A2 — identity missing"
+    $result.NextFile = "guides/existing-agent-status.md -> Case A2 - identity missing"
     return [PSCustomObject]$result
   }
+
+  Good "DID detected"
 
   $result.HumanLinkHint = ($identityText -match "human|linked|verified|credential|success|isDefault")
 
@@ -234,6 +230,7 @@ function Assess-Agent($Root) {
 }
 
 Title "gn1y Windows Agent Doctor"
+
 Info "This is read-only."
 Info "It does not claim Tiles."
 Info "It does not install or update anything."
@@ -261,7 +258,9 @@ $commonRoots = @(
 foreach ($cr in $commonRoots) {
   if (Test-Path $cr) {
     Info "Search root exists: $cr"
+
     $skills = @(Find-SkillFolders $cr)
+
     foreach ($s in $skills) {
       $guess = Guess-AgentRootFromSkill $s.FullName
       Add-UniquePath $candidateRoots $guess
@@ -281,13 +280,15 @@ foreach ($cr in $commonRoots) {
 }
 
 $openclaw = Get-Command openclaw -ErrorAction SilentlyContinue
+
 if ($openclaw) {
   Title "OPENCLAW CLI CHECK"
   $bindings = & openclaw agents list --bindings 2>&1
   Write-Host ($bindings | Out-String)
 
   $text = ($bindings | Out-String)
-  $pathMatches = [regex]::Matches($text, "[A-Za-z]:\\[^\r\n\|`"']+")
+  $pathMatches = [regex]::Matches($text, '[A-Za-z]:\\[^\r\n\|"]+')
+
   foreach ($m in $pathMatches) {
     $p = $m.Value.Trim()
     if (Test-Path $p) {
@@ -304,12 +305,10 @@ if ($candidateRoots.Count -eq 0) {
   Bad "No agent folders found automatically."
   Write-Host ""
   Write-Host "WHAT TO DO NEXT:"
-  Write-Host "1. If you already have an agent, rerun Doctor with:"
-  Write-Host '   irm https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1 | iex'
-  Write-Host "   or pass -AgentRoot if running local script."
+  Write-Host "1. If you already have an agent, rerun Doctor and pass -AgentRoot if running local script."
+  Write-Host "2. If you do not have an agent, open START_HERE.md -> Route B -> guides/create-agent.md"
   Write-Host ""
-  Write-Host "2. If you do not have an agent:"
-  Write-Host "   Open START_HERE.md -> Route B -> guides/create-agent.md"
+  Write-Host "NEXT STEP: Open START_HERE.md and follow the matching route." -ForegroundColor Cyan
   exit 0
 }
 
@@ -333,7 +332,7 @@ $noSkill = @($results | Where-Object { $_.Status -eq "NO_IDENTITY_SKILL" })
 foreach ($r in $results) {
   Write-Host ""
   Write-Host "AgentRoot: $($r.AgentRoot)"
-  Write-Host "Status:    $($r.Status)"
+  Write-Host "Status: $($r.Status)"
   Write-Host "Next file: $($r.NextFile)"
 }
 
@@ -362,6 +361,8 @@ if ($ready.Count -gt 0) {
   Write-Host "- 10 USDC"
   Write-Host "- amount=10000000"
   Write-Host "- any amount greater than 0"
+  Write-Host ""
+  Write-Host "NEXT STEP: Open guides/free-claim-copy-paste-windows.md only after manual verification." -ForegroundColor Cyan
   exit 0
 }
 
@@ -372,6 +373,8 @@ if ($update.Count -gt 0) {
   Write-Host "Open: guides/update-identity-skill.md"
   Write-Host ""
   Write-Host "Do not claim Tiles yet."
+  Write-Host ""
+  Write-Host "NEXT STEP: Open guides/update-identity-skill.md" -ForegroundColor Cyan
   exit 0
 }
 
@@ -380,7 +383,9 @@ if ($noDid.Count -gt 0) {
   Write-Host ""
   Write-Host "Next:"
   Write-Host "Open: guides/existing-agent-status.md"
-  Write-Host "Go to Case A2 — Skill exists, identity missing."
+  Write-Host "Go to Case A2 - Skill exists, identity missing."
+  Write-Host ""
+  Write-Host "NEXT STEP: Open guides/existing-agent-status.md" -ForegroundColor Cyan
   exit 0
 }
 
@@ -389,7 +394,9 @@ if ($noSkill.Count -gt 0) {
   Write-Host ""
   Write-Host "Next:"
   Write-Host "Open: guides/existing-agent-status.md"
-  Write-Host "Go to Case A1 — Skill missing."
+  Write-Host "Go to Case A1 - Skill missing."
+  Write-Host ""
+  Write-Host "NEXT STEP: Open guides/existing-agent-status.md" -ForegroundColor Cyan
   exit 0
 }
 
@@ -397,3 +404,6 @@ Write-Host "No ready agent found."
 Write-Host ""
 Write-Host "Next:"
 Write-Host "Open START_HERE.md and follow the route printed above."
+Write-Host ""
+Write-Host "NEXT STEP: Read the result above and open the guide file shown by Windows Agent Doctor." -ForegroundColor Cyan
+Write-Host "If the result is unclear, open COMMAND_CENTER.md and follow the matching route." -ForegroundColor Cyan
