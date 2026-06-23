@@ -397,7 +397,3 @@ Write-Host "No ready agent found."
 Write-Host ""
 Write-Host "Next:"
 Write-Host "Open START_HERE.md and follow the route printed above."
-
-Write-Host ""
-Write-Host "NEXT STEP: Read the result above and open the guide file shown by Windows Agent Doctor." -ForegroundColor Cyan
-Write-Host "If the result is unclear, open COMMAND_CENTER.md and follow the matching route." -ForegroundColor Cyan
