@@ -1,4 +1,4 @@
-﻿# Windows Agent Doctor
+# Windows Agent Doctor
 
 Windows Agent Doctor is the first command most Windows users should run.
 
@@ -46,6 +46,8 @@ touch private keys manually
 
 Use this from the public website.
 
+Before copying commands, check that you are using the official guide website: https://guide-by-gn1y.vercel.app
+
 Open PowerShell and paste:
 
 ```powershell
@@ -67,10 +69,6 @@ powershell -NoProfile -ExecutionPolicy Bypass -File $DoctorFile
 ```
 
 ---
-
-
----
-
 ## How to read the result
 
 At the end, Doctor should print a `NEXT STEP`.
@@ -162,7 +160,3 @@ amount > 0
 Before sharing Doctor output, read:
 
 [../PRIVACY.md](../PRIVACY.md)
-
-
-
-

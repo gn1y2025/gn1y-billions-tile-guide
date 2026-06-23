@@ -1,4 +1,4 @@
-﻿# Free Claim Copy-Paste — Windows
+# Free Claim Copy-Paste — Windows
 
 Use this only after Windows Agent Doctor says your agent is ready.
 
@@ -51,6 +51,10 @@ Paid: false
 
 Use this from the public website.
 
+Before copying commands, check that you are using the official guide website: https://guide-by-gn1y.vercel.app
+
+Do not run this command before Doctor says READY TO CLAIM.
+
 Open PowerShell and paste:
 
 ```powershell
@@ -90,10 +94,6 @@ if ($?) {
 ```
 
 ---
-
-
----
-
 ## After success
 
 Open:
@@ -105,6 +105,3 @@ Save proof.
 Optional feedback:
 
 [../templates/feedback-template.md](../templates/feedback-template.md)
-
-
-

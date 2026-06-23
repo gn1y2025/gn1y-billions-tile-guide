@@ -1,4 +1,4 @@
-﻿# Feedback Template
+# Feedback Template
 
 Use this after testing the guide.
 

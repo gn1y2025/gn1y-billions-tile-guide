@@ -1,4 +1,4 @@
-﻿# Disclaimer
+# Disclaimer
 
 This is an unofficial community guide.
 

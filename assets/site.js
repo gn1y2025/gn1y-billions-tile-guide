@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   const toast = document.querySelector(".toast");
 
   function showToast(message) {

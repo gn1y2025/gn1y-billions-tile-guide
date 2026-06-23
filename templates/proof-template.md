@@ -1,4 +1,4 @@
-﻿# Proof Template
+# Proof Template
 
 After successful claim, save this information privately.
 

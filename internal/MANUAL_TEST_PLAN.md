@@ -1,4 +1,4 @@
-﻿# Manual Test Plan
+# Manual Test Plan
 
 Before promoting this guide publicly, run these manual tests.
 

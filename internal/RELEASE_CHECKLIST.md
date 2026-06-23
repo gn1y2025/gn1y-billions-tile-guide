@@ -1,4 +1,4 @@
-﻿# Release Checklist
+# Release Checklist
 
 Use this before sharing the guide publicly.
 

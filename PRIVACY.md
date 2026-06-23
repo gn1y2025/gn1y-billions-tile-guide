@@ -1,4 +1,4 @@
-﻿# Privacy and Redaction
+# Privacy and Redaction
 
 Before sharing terminal logs publicly, remove anything you do not want connected to you.
 

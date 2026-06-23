@@ -1,4 +1,4 @@
-﻿# Quick Start
+# Quick Start
 
 For the shortest safe path, open:
 

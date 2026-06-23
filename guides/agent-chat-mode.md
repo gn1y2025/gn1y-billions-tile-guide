@@ -1,4 +1,4 @@
-﻿# AI Agent Chat Mode
+# AI Agent Chat Mode
 
 Safety-first instructions for humans who want an AI agent to help with the Billions AI Agentic Movie Tiles claim flow.
 

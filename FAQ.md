@@ -1,4 +1,4 @@
-﻿# FAQ
+# FAQ
 
 ## Does this guide guarantee FAIAR rewards?
 

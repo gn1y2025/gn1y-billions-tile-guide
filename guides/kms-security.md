@@ -1,4 +1,4 @@
-﻿# KMS Security
+# KMS Security
 
 Security hardening for Billions Verified Agent Identity.
 
@@ -140,4 +140,3 @@ Stop if:
 When unsure:
 
 **STOP and ask for help.**
-

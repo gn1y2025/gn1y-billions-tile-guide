@@ -1,4 +1,4 @@
-﻿# macOS Guide
+# macOS Guide
 
 Safety-first macOS Terminal guide for preparing an OpenClaw agent for the Billions AI Agentic Movie Tiles claim flow.
 
@@ -439,9 +439,8 @@ When unsure:
 
 ---
 
-## Official alignment addendum
+## Quick reference
 
-This section exists to avoid confusion between old community commands, official OpenClaw commands, and the practical terminal flow used by gn1y.
 
 ### Runtime baseline
 
@@ -588,4 +587,3 @@ Stop on:
 amount=10000000
 any amount greater than 0
 ```
-

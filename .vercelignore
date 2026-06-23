@@ -1,4 +1,4 @@
-﻿.git
+.git
 .github
 node_modules
 .vercel
@@ -26,3 +26,5 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 Thumbs.db
+
+internal

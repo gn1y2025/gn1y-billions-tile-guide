@@ -1,4 +1,4 @@
-﻿# Update Identity Skill
+# Update Identity Skill
 
 Use this page only if Agent Doctor says:
 
@@ -55,7 +55,21 @@ seed phrase
 Run Agent Doctor first:
 
 ```powershell
-irm https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1 | iex
+$DoctorUrl = "https://guide-by-gn1y.vercel.app/scripts/windows-agent-doctor.ps1"
+$DoctorFile = Join-Path $env:TEMP "gn1y-windows-agent-doctor.ps1"
+
+Invoke-WebRequest -UseBasicParsing -Uri $DoctorUrl -OutFile $DoctorFile
+
+Write-Host ""
+Write-Host "Windows Agent Doctor downloaded to:"
+Write-Host $DoctorFile
+Write-Host ""
+
+notepad $DoctorFile
+
+Read-Host "Review the script in Notepad. Press Enter to run Windows Agent Doctor"
+
+powershell -NoProfile -ExecutionPolicy Bypass -File $DoctorFile
 ```
 
 Copy the exact agent folder path it found.

@@ -1,4 +1,4 @@
-﻿# Support Question Template
+# Support Question Template
 
 Use this template when asking for help in official support/community channels.
 

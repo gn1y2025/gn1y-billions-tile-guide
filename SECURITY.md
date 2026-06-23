@@ -1,4 +1,4 @@
-﻿# Security
+# Security
 
 Safety is the most important part of this guide.
 

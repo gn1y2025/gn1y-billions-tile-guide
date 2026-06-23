@@ -1,4 +1,4 @@
-﻿# Paid Tile Guide
+# Paid Tile Guide
 
 Safety-first guide for users who intentionally want to claim a paid Billions AI Agentic Movie Tile.
 

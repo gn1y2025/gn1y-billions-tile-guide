@@ -1,4 +1,4 @@
-﻿# Identity Errors
+# Identity Errors
 
 Common errors related to Billions Verified Agent Identity skill, DID, and agent identity.
 
@@ -228,4 +228,3 @@ Stop.
 Repair or reinstall the official skill.
 
 Do not continue to `manualLinkHumanToAgent.js` or `buildX402Payment.js` without identity check.
-

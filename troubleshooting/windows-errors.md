@@ -1,4 +1,4 @@
-﻿# Windows Errors
+# Windows Errors
 
 Common Windows / PowerShell issues while preparing an OpenClaw agent for Billions AI Agentic Movie Tiles.
 

@@ -1,4 +1,4 @@
-﻿# Start Here
+# Start Here
 
 The old route selector is now simplified.
 

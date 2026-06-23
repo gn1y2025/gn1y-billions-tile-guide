@@ -1,4 +1,4 @@
-﻿# Pairing Errors
+# Pairing Errors
 
 Common errors while linking an OpenClaw agent to a verified Billions human account.
 

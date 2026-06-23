@@ -1,4 +1,4 @@
-﻿# After Claim Proof
+# After Claim Proof
 
 After a successful Tile claim, save proof.
 

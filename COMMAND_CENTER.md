@@ -1,4 +1,4 @@
-﻿# Command Center
+# Command Center
 
 Start here if you are on Windows and want the shortest safe path.
 
@@ -35,6 +35,8 @@ It only checks and prints a result.
 
 Use this from the public website.
 
+Before copying commands, check that you are using the official guide website: https://guide-by-gn1y.vercel.app
+
 Open PowerShell and paste:
 
 ```powershell
@@ -55,13 +57,9 @@ Read-Host "Review the script in Notepad. Press Enter to run Windows Agent Doctor
 powershell -NoProfile -ExecutionPolicy Bypass -File $DoctorFile
 ```
 
-If PowerShell cannot download the file, the repo may still be private. Use local testing mode below.
+If PowerShell cannot download the file, open the live guide again and copy the recommended command from: https://guide-by-gn1y.vercel.app
 
 ---
-
-
----
-
 ## Step 2 — Read the terminal result
 
 Doctor will end with a `NEXT STEP`.
@@ -165,6 +163,3 @@ Before posting Doctor output in Discord, GitHub, Telegram, or X, read:
 [PRIVACY.md](./PRIVACY.md)
 
 Redact anything you do not want public.
-
-
-

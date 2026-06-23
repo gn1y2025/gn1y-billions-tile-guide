@@ -1,4 +1,4 @@
-﻿# Create an OpenClaw Agent
+# Create an OpenClaw Agent
 
 This guide explains how to create or identify an OpenClaw agent before using the Billions Verified Agent Identity skill and the Billions AI Agentic Movie Tiles claim flow.
 

@@ -1,4 +1,4 @@
-﻿# Claim Errors
+# Claim Errors
 
 Common errors during Billions AI Agentic Movie Tiles claim flow.
 

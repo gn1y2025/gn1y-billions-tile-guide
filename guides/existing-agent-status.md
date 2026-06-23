@@ -1,4 +1,4 @@
-﻿# Existing Agent Status Check
+# Existing Agent Status Check
 
 Recommended first step: Agent Doctor.
 
@@ -9,7 +9,21 @@ Open:
 or run:
 
 ```powershell
-irm https://raw.githubusercontent.com/gn1y2025/gn1y-billions-tile-guide/main/scripts/windows-agent-doctor.ps1 | iex
+$DoctorUrl = "https://guide-by-gn1y.vercel.app/scripts/windows-agent-doctor.ps1"
+$DoctorFile = Join-Path $env:TEMP "gn1y-windows-agent-doctor.ps1"
+
+Invoke-WebRequest -UseBasicParsing -Uri $DoctorUrl -OutFile $DoctorFile
+
+Write-Host ""
+Write-Host "Windows Agent Doctor downloaded to:"
+Write-Host $DoctorFile
+Write-Host ""
+
+notepad $DoctorFile
+
+Read-Host "Review the script in Notepad. Press Enter to run Windows Agent Doctor"
+
+powershell -NoProfile -ExecutionPolicy Bypass -File $DoctorFile
 ```
 
 Then follow the terminal output.
@@ -309,4 +323,3 @@ Stop immediately if:
 When unsure:
 
 **STOP and ask for help.**
-

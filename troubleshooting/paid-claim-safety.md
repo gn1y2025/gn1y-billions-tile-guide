@@ -1,4 +1,4 @@
-﻿# Paid Claim Safety
+# Paid Claim Safety
 
 Safety rules for optional paid tile claim.
 

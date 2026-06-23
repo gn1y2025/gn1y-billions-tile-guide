@@ -1,4 +1,4 @@
-﻿# Troubleshooting
+# Troubleshooting
 
 Use this section if something goes wrong.
 

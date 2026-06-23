@@ -1,4 +1,4 @@
-﻿# gn1y Billions AI Agentic Movie Tile Guide
+# gn1y Billions AI Agentic Movie Tile Guide
 
 Safety-first community guide for OpenClaw agents and Billions AI Agentic Movie Tiles.
 
