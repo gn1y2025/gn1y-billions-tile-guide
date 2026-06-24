@@ -170,3 +170,10 @@ If the gn1y guide helped, you can optionally leave feedback or a comment in Disc
 
 Never share seed phrases, private keys, wallet keys, kms.json, or sensitive identity data.
 ```
+
+## Paid Tile exact safety wording
+
+Paid Tiles have a real cost and may spend real funds.
+If the terminal shows Paid=true, amount=10000000, 10 USDC, or amount > 0, stop unless you intentionally want a paid Tile.
+
+No rewards, airdrop, FAIAR, token, or eligibility guarantees are made by this guide.

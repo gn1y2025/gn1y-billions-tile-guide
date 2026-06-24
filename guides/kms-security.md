@@ -140,3 +140,7 @@ Stop if:
 When unsure:
 
 **STOP and ask for help.**
+
+## Exact kms.json safety wording
+
+Do not share kms.json, seed phrases, private keys, wallet keys, raw identity backups, or unredacted sensitive logs.

@@ -129,3 +129,9 @@ node scripts/getIdentities.js
 ```
 
 Continue only if the DID/default identity/human link belong to the intended agent.
+
+## Free Tile eligibility wording
+
+Treat the free Tile rule conservatively: one person, one verified human account, one agent, one free Tile unless Billions explicitly confirms otherwise.
+
+No rewards, airdrop, FAIAR, token, or eligibility guarantees are made by this guide.

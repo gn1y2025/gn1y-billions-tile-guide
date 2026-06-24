@@ -163,3 +163,7 @@ Before posting Doctor output in Discord, GitHub, Telegram, or X, read:
 [PRIVACY.md](./PRIVACY.md)
 
 Redact anything you do not want public.
+
+## Final command safety reminder
+
+Do not run claim commands until Windows Agent Doctor says READY TO CLAIM and the guide tells you to open the free claim route.

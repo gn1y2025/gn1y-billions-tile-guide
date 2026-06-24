@@ -90,3 +90,8 @@ Do not paste full raw logs unless you redacted them first.
 Do not share unredacted logs publicly.
 
 Before posting terminal output in Discord, GitHub, Telegram, X, or any public chat, redact local paths, DID, publicKeyHex, wallet addresses, agent names, and any account-linked data.
+
+## Data collection wording
+
+This guide does not collect your data.
+Hosted pages and scripts are public static files. Your agent folder, proofs, logs, identities, and kms.json stay on your own machine unless you choose to share them.

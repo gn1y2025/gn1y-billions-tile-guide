@@ -105,3 +105,12 @@ Save proof.
 Optional feedback:
 
 [../templates/feedback-template.md](../templates/feedback-template.md)
+
+## Final free-claim safety marker
+
+Continue only when the free claim clearly shows:
+
+- amount=0
+- Paid=false
+
+Do not run this command before Doctor says READY TO CLAIM.

@@ -21,3 +21,9 @@ The guide is for education and safety-first onboarding only.
 Always verify the latest rules with official Billions Network sources and official community/support channels.
 
 Use at your own risk.
+
+## Plain-language disclaimer
+
+This guide is not financial advice.
+No rewards, airdrop, FAIAR, token, allocation, or eligibility guarantees are made.
+This is an unofficial community guide and may become outdated if Billions, OpenClaw, or x402 changes.

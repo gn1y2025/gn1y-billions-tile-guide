@@ -205,3 +205,18 @@ prepare instant free Tile claim
 ```
 
 If you are only testing agent creation, stop after Gateway/Dashboard and do not claim Tiles.
+
+## Beginner naming example
+
+When creating a new agent, use your own unique agent name.
+
+Example:
+
+    openclaw agents add my-agent-name
+
+Replace my-agent-name with your real unique agent name.
+
+## Pairing reminder
+
+After creating the agent, pair it with your Billions/OpenClaw account only through the official pairing flow shown by your local setup.
+Do not share private keys, seed phrases, kms.json, or sensitive identity files while pairing.
