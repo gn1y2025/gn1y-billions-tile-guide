@@ -78,6 +78,20 @@ openclaw agents list --bindings
 
 ---
 
+
+## Step 1.5 - Access preflight scripts
+
+If you are using the live website, the safest path is to run Windows Agent Doctor from the website first.
+
+If you want to run local preflight scripts from this repository, open a terminal in the repository root first.
+
+Example local repo route:
+
+    cd path\to\gn1y-billions-tile-guide
+    .\scripts\windows-preflight.ps1
+
+Use this only when you intentionally cloned the repository. Beginners should prefer the website Doctor route.
+
 ## Step 2 — Run preflight
 
 ### Windows

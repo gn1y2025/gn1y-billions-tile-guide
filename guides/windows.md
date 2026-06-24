@@ -465,149 +465,16 @@ When unsure:
 
 ## Quick reference
 
+Use the live website route first if you are a beginner.
 
-### Runtime baseline
+Recommended beginner route:
 
-Recommended baseline for this guide:
+    Open the website
+    Run Windows Agent Doctor
+    Follow only the route printed by Doctor
 
-```text
-Node.js 24
-OpenClaw latest stable
-```
+Local repo route is only for maintainers or advanced users who cloned this repository and opened a terminal in the repository root.
 
-Check:
+    .\scripts\windows-preflight.ps1
 
-```bash
-node -v
-openclaw --version
-```
-
-### OpenClaw runtime check
-
-After installing OpenClaw and completing onboarding, verify the runtime:
-
-```bash
-openclaw onboard --install-daemon
-openclaw gateway status
-openclaw dashboard
-```
-
-OpenClaw onboarding may ask for a model provider API key.
-
-Do not continue to Billions identity or Tiles claim if the OpenClaw runtime is not working.
-
-### Create agent first if needed
-
-If you do not have an OpenClaw agent yet, start here:
-
-```text
-guides/create-agent.md
-```
-
-Basic command:
-
-```bash
-openclaw agents add my-agent
-openclaw agents list --bindings
-```
-
-Use your own unique agent id.
-
-### Billions Verified Agent Identity install options
-
-Use official / verified install options.
-
-Search first:
-
-```bash
-openclaw skills search verified-agent-identity
-```
-
-Preferred OpenClaw install if available:
-
-```bash
-openclaw skills install verified-agent-identity
-```
-
-Official Billions fallback:
-
-```bash
-npx clawhub@latest install verified-agent-identity
-```
-
-Alternative official fallback:
-
-```bash
-npx skills add BillionsNetwork/verified-agent-identity
-```
-
-Do not rely on old identity-slug install aliases:
-
-```text
-openclaw skills install verified-agent-identity
-```
-
-The canonical skill name is:
-
-```text
-verified-agent-identity
-```
-
-### KMS security before identity creation
-
-Before creating/importing identity, read:
-
-```text
-guides/kms-security.md
-```
-
-Billions identity data may live outside the agent workspace:
-
-```text
-$HOME/.openclaw/billions
-```
-
-The agent folder backup does not automatically guarantee that this identity storage is backed up.
-
-### Identity-first rule
-
-Before human linking, signing, or x402 payment building, check identity first:
-
-```bash
-node scripts/getIdentities.js
-```
-
-Continue only if:
-
-```text
-DID exists
-default identity is correct
-human link is verified
-agent address is correct
-```
-
-Stop if identity belongs to another agent.
-
-### Instant API claim note
-
-For terminal Tiles claim, use:
-
-```text
-guides/instant-api-claim.md
-```
-
-The claim can expire quickly. During previous successful terminal claims, remaining time was around 5 minutes.
-
-Safe flow:
-
-```text
-Phase1 -> free amount=0 -> Phase2 -> fresh claim_id -> immediate submit
-```
-
-Stop on:
-
-```text
-10 USDC
-amount=10000000
-any amount greater than 0
-```
+Do not copy random commands from this page unless Doctor sent you to this route.

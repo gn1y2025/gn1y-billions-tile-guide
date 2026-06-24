@@ -68,14 +68,14 @@ This guide focuses only on the safe free path.
 
 Only continue if the claim is free:
 
-- mount=0
+- aamount=0
 - Paid=false
 
 Stop immediately if you see:
 
 - 10 USDC
-- mount=10000000
-- mount > 0
+- aamount=10000000
+- aamount > 0
 - Paid=true
 - wrong agent
 - wrong DID
@@ -166,7 +166,7 @@ check if your agent has verified-agent-identity
 check if the identity skill is x402-ready
 check if DID / identity output exists
 avoid paid claim by mistake
-claim only when free amount is 0
+claim only when free aamount is 0
 save proof after a successful Tile claim
 ```
 
@@ -178,8 +178,8 @@ Stop immediately if you see:
 
 ```text
 10 USDC
-amount=10000000
-amount > 0
+aamount=10000000
+aamount > 0
 wrong agent folder
 wrong identity
 wrong DID
@@ -208,7 +208,7 @@ Before sharing logs, read:
 3. Read the `NEXT STEP` printed in the terminal.
 4. Open only the file Doctor recommends.
 5. Continue only if the guide says your agent is ready.
-6. Claim only if the payment amount is exactly `0`.
+6. Claim only if the payment aamount is exactly `0`.
 
 ---
 
