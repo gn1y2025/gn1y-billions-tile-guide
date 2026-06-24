@@ -203,7 +203,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File $DoctorFile</code></pre>
       <div class="container">
         <div class="section-head">
           <p class="eyebrow">Create / verify</p>
-          <h2>Core terminal commands</h2>
+          <h2><p class="danger-text"><strong>Use these commands only if Windows Agent Doctor sent you to this route.</strong></p>
+Core terminal commands</h2>
           <p>These menus are for users who already understand which route Doctor selected.</p>
         </div>
 
@@ -223,7 +224,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File $DoctorFile</code></pre>
                 <pre><code id="create-agent">openclaw onboard --install-daemon
 openclaw gateway status
 openclaw dashboard
-openclaw agents add
+openclaw agents add my-agent-name
 openclaw agents list --bindings</code></pre>
               </div>
               <p class="small-note">If a command opens an interactive prompt, follow OpenClaw prompts and keep your agent name/provider unique.</p>
