@@ -240,3 +240,20 @@ Open:
     troubleshooting/claim-errors.md
 
 Do not treat PowerShell finishing as success unless the claim script printed `SUBMIT OK` and `Proof saved to:`.
+
+## Node cleanup assertion route
+
+If Windows prints a Node cleanup assertion after Phase1 or Phase2, check the final result.
+
+Allowed to continue only when the script itself confirms valid JSON and continues safely.
+
+Never treat this as success unless the final output prints:
+
+- `SUBMIT OK`
+- `Paid=false`
+- `amount=0`
+- `Proof saved to:`
+
+If the script stops, open:
+
+    troubleshooting/claim-errors.md

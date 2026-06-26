@@ -38,22 +38,42 @@ Stop immediately if you see:
 - wrong agent
 - wrong DID
 - wrong human link
-- `node.exe Assertion failed`
-- `NativeCommandError`
 - `Cannot find module`
+- `MODULE_NOT_FOUND`
 - `buildX402Payment.js failed`
+- no valid JSON from Phase1 or Phase2
+- no `claim_id`
+- no `SUBMIT OK`
+- no `Proof saved to:`
 
 The free Tile claim must show:
 
 - `amount=0`
 - `Paid=false`
 
-Claim success requires both:
+Claim success requires all of these:
 
 - `SUBMIT OK`
+- `Paid=false`
+- `amount=0`
 - `Proof saved to:`
 
 If these lines do not appear, the claim is not proven successful.
+
+---
+
+## Note about Node cleanup assertions
+
+On some Windows setups, Node may print a cleanup assertion after `buildX402Payment.js` already produced valid JSON.
+
+The script may continue only if valid JSON was produced and all safety checks pass.
+
+This is still not success.
+
+Success only happens after final submit prints:
+
+- `SUBMIT OK`
+- `Proof saved to:`
 
 ---
 
@@ -69,51 +89,57 @@ Do not run this command before Doctor says `READY TO CLAIM`.
 
 Open PowerShell and paste:
 
-    $AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
+    & {
+      $ErrorActionPreference = "Stop"
 
-    if (!(Test-Path $AgentRoot)) {
-      throw "STOP: Agent folder does not exist: $AgentRoot"
-    }
+      $AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
 
-    $ClaimUrl = "https://guide-by-gn1y.vercel.app/scripts/windows-instant-free-claim.ps1"
-    $ClaimFile = Join-Path $env:TEMP "gn1y-windows-instant-free-claim.ps1"
+      if (!(Test-Path $AgentRoot)) {
+        Write-Host ""
+        Write-Host "STOP: Agent folder does not exist: $AgentRoot"
+        return
+      }
 
-    Invoke-WebRequest -UseBasicParsing -Uri $ClaimUrl -OutFile $ClaimFile
+      $ClaimUrl = "https://guide-by-gn1y.vercel.app/scripts/windows-instant-free-claim.ps1"
+      $ClaimFile = Join-Path $env:TEMP "gn1y-windows-instant-free-claim.ps1"
 
-    Write-Host ""
-    Write-Host "Claim script downloaded to:"
-    Write-Host $ClaimFile
-    Write-Host ""
+      Invoke-WebRequest -UseBasicParsing -Uri $ClaimUrl -OutFile $ClaimFile
 
-    notepad $ClaimFile
-
-    Read-Host "Review the script in Notepad. Press Enter to run FREE Tile claim"
-
-    powershell -NoProfile -ExecutionPolicy Bypass -File $ClaimFile -AgentRoot $AgentRoot -Intent "AI agent movie tile claim"
-
-    $ClaimExitCode = $LASTEXITCODE
-
-    Write-Host ""
-    Write-Host "Claim script exit code:"
-    Write-Host $ClaimExitCode
-
-    if ($ClaimExitCode -ne 0) {
       Write-Host ""
-      Write-Host "STOP: Claim script stopped or failed."
-      Write-Host "This is NOT a successful claim."
-      Write-Host "Read the error above and open troubleshooting/claim-errors.md."
-      throw "Claim script failed."
-    }
+      Write-Host "Claim script downloaded to:"
+      Write-Host $ClaimFile
+      Write-Host ""
 
-    Write-Host ""
-    Write-Host "Claim script exited with code 0."
-    Write-Host "Now manually verify the output above contains:"
-    Write-Host "- SUBMIT OK"
-    Write-Host "- Paid=false"
-    Write-Host "- amount=0"
-    Write-Host "- Proof saved to:"
-    Write-Host ""
-    Write-Host "If any of these lines are missing, do NOT treat it as success."
+      notepad $ClaimFile
+
+      Read-Host "Review the script in Notepad. Press Enter to run FREE Tile claim"
+
+      powershell -NoProfile -ExecutionPolicy Bypass -File $ClaimFile -AgentRoot $AgentRoot -Intent "AI agent movie tile claim"
+
+      $ClaimExitCode = $LASTEXITCODE
+
+      Write-Host ""
+      Write-Host "Claim script exit code:"
+      Write-Host $ClaimExitCode
+
+      if ($ClaimExitCode -ne 0) {
+        Write-Host ""
+        Write-Host "STOP: Claim script stopped or failed."
+        Write-Host "This is NOT a successful claim."
+        Write-Host "Read the error above and open troubleshooting/claim-errors.md."
+        return
+      }
+
+      Write-Host ""
+      Write-Host "Claim script exited with code 0."
+      Write-Host "Now manually verify the output above contains:"
+      Write-Host "- SUBMIT OK"
+      Write-Host "- Paid=false"
+      Write-Host "- amount=0"
+      Write-Host "- Proof saved to:"
+      Write-Host ""
+      Write-Host "If any of these lines are missing, do NOT treat it as success."
+    }
 
 ---
 

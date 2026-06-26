@@ -21,11 +21,15 @@ function Good([string]$Message) {
 }
 
 function Warn([string]$Message) {
-  Write-Host "[CHECK] $Message"
+  Write-Host "[CHECK] $Message" -ForegroundColor Yellow
 }
 
 function ConvertFrom-MixedJsonText {
   param([string]$Text)
+
+  if ([string]::IsNullOrWhiteSpace($Text)) {
+    return $null
+  }
 
   try {
     return ($Text | ConvertFrom-Json -ErrorAction Stop)
@@ -114,7 +118,8 @@ function Invoke-NodeChecked {
   param(
     [Parameter(Mandatory=$true)][string[]]$Arguments,
     [Parameter(Mandatory=$true)][string]$WorkingDirectory,
-    [Parameter(Mandatory=$true)][string]$Label
+    [Parameter(Mandatory=$true)][string]$Label,
+    [switch]$AllowValidJsonAfterCleanupAssertion
   )
 
   $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
@@ -141,8 +146,7 @@ function Invoke-NodeChecked {
     -RedirectStandardOutput $stdoutPath `
     -RedirectStandardError $stderrPath `
     -Wait `
-    -PassThru `
-    -NoNewWindow
+    -PassThru
 
   $stdout = ""
   $stderr = ""
@@ -156,30 +160,38 @@ function Invoke-NodeChecked {
   }
 
   $combined = ($stdout + "`n" + $stderr).Trim()
+  $stdoutJson = ConvertFrom-MixedJsonText -Text $stdout
 
-  $fatalPatterns = @(
-    "Assertion failed",
-    "NativeCommandError",
+  $cleanupAssertion =
+    ($stderr -match "Assertion failed") -and
+    (
+      $stderr -match "UV_HANDLE_CLOSING" -or
+      $stderr -match "uv_close" -or
+      $stderr -match "async\.c"
+    )
+
+  $hardFatalPatterns = @(
     "Cannot find module",
     "MODULE_NOT_FOUND",
     "UnhandledPromiseRejection",
     "TypeError:",
     "ReferenceError:",
     "SyntaxError:",
-    "ERR_"
+    "ERR_MODULE_NOT_FOUND",
+    "ERR_REQUIRE_ESM"
   )
 
-  $fatalHit = $false
+  $hardFatalHit = $false
 
-  foreach ($pat in $fatalPatterns) {
+  foreach ($pat in $hardFatalPatterns) {
     if ($combined -match [regex]::Escape($pat)) {
-      $fatalHit = $true
+      $hardFatalHit = $true
     }
   }
 
-  if ($process.ExitCode -ne 0 -or $fatalHit) {
+  if ($hardFatalHit) {
     Write-Host ""
-    Write-Host "=== NODE STEP FAILED: $Label ===" -ForegroundColor Red
+    Write-Host "=== NODE STEP HARD FAILED: $Label ===" -ForegroundColor Red
     Write-Host "ExitCode: $($process.ExitCode)"
     Write-Host ""
     Write-Host "--- stdout ---"
@@ -191,14 +203,43 @@ function Invoke-NodeChecked {
     Write-Host "Raw logs saved:"
     Write-Host $stdoutPath
     Write-Host $stderrPath
-    Stop-Guide "Node/buildX402Payment step failed. This is NOT a successful claim. Do not continue."
+    Stop-Guide "Node dependency/runtime error. This is NOT a successful claim."
+  }
+
+  if ($process.ExitCode -ne 0) {
+    if ($AllowValidJsonAfterCleanupAssertion -and $cleanupAssertion -and $null -ne $stdoutJson) {
+      Write-Host ""
+      Warn "Node exited with a cleanup assertion after producing valid JSON."
+      Warn "The script will continue using stdout JSON, but this is still guarded."
+      Warn "If amount=0 / Paid=false / claim_id / SUBMIT OK are not confirmed, it will stop."
+      Write-Host ""
+    } else {
+      Write-Host ""
+      Write-Host "=== NODE STEP FAILED: $Label ===" -ForegroundColor Red
+      Write-Host "ExitCode: $($process.ExitCode)"
+      Write-Host ""
+      Write-Host "--- stdout ---"
+      Write-Host $stdout
+      Write-Host ""
+      Write-Host "--- stderr ---"
+      Write-Host $stderr
+      Write-Host ""
+      Write-Host "Raw logs saved:"
+      Write-Host $stdoutPath
+      Write-Host $stderrPath
+      Stop-Guide "Node/buildX402Payment step failed. This is NOT a successful claim. Do not continue."
+    }
   }
 
   return [pscustomobject]@{
-    Text = $combined
+    Stdout = $stdout
+    Stderr = $stderr
+    Combined = $combined
+    StdoutJson = $stdoutJson
     StdoutPath = $stdoutPath
     StderrPath = $stderrPath
     ExitCode = $process.ExitCode
+    CleanupAssertionAccepted = ($process.ExitCode -ne 0 -and $AllowValidJsonAfterCleanupAssertion -and $cleanupAssertion -and $null -ne $stdoutJson)
   }
 }
 
@@ -267,7 +308,7 @@ Write-Host ""
 
 Write-Host "Identity check before x402..."
 $identityResult = Invoke-NodeChecked -Arguments @(".\getIdentities.js") -WorkingDirectory $buildDir -Label "identity-check"
-$identityText = $identityResult.Text
+$identityText = $identityResult.Stdout
 
 Write-Host ""
 Write-Host $identityText
@@ -286,16 +327,17 @@ $submitUrl = "https://x402.billions.network/api/v1/tiles"
 Write-Host "Phase1: requesting x402 challenge..."
 Write-Host $resource
 
-$phase1Result = Invoke-NodeChecked -Arguments @(".\buildX402Payment.js", "--resource", $resource) -WorkingDirectory $buildDir -Label "phase1-build-x402-payment"
-$phase1Text = $phase1Result.Text
-$phase1Path = Join-Path $buildDir ("phase1-combined-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".txt")
+$phase1Result = Invoke-NodeChecked -Arguments @(".\buildX402Payment.js", "--resource", $resource) -WorkingDirectory $buildDir -Label "phase1-build-x402-payment" -AllowValidJsonAfterCleanupAssertion
+$phase1Text = $phase1Result.Stdout
+
+$phase1Path = Join-Path $buildDir ("phase1-stdout-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".txt")
 $phase1Text | Set-Content -Encoding UTF8 $phase1Path
 
 $phase1 = ConvertFrom-MixedJsonText -Text $phase1Text
 
 if ($null -eq $phase1) {
   Write-Host $phase1Text
-  Stop-Guide "Could not parse Phase1 output as JSON. Saved raw output to: $phase1Path"
+  Stop-Guide "Could not parse Phase1 stdout as JSON. Saved raw output to: $phase1Path"
 }
 
 $allPaymentCandidates = Find-ObjectsRecursive -Node $phase1 -Predicate {
@@ -303,9 +345,8 @@ $allPaymentCandidates = Find-ObjectsRecursive -Node $phase1 -Predicate {
 
   $amount = Get-PropValue -Object $o -Names @("amount", "maxAmountRequired", "value")
   $hash = Get-PropValue -Object $o -Names @("paymentHash", "hash")
-  $file = Get-PropValue -Object $o -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
 
-  return ($null -ne $amount -and ($null -ne $hash -or $null -ne $file))
+  return ($null -ne $amount -and $null -ne $hash)
 }
 
 $paidCandidates = @()
@@ -338,18 +379,23 @@ if ($freeCandidates.Count -eq 0) {
 $free = $freeCandidates[0]
 $freeAmount = Get-PropValue -Object $free -Names @("amount", "maxAmountRequired", "value")
 $freePaymentHash = Get-PropValue -Object $free -Names @("paymentHash", "hash")
-$paymentRequiredFilePath = Get-PropValue -Object $free -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
 
 if ("$freeAmount" -ne "0") {
   Stop-Guide "Selected option is not free. Amount: $freeAmount"
 }
 
-if (!$freePaymentHash) {
-  $freePaymentHash = Get-PropValue -Object $phase1 -Names @("paymentHash", "hash")
+$paymentRequiredFileObjects = Find-ObjectsRecursive -Node $phase1 -Predicate {
+  param($o)
+
+  $file = Get-PropValue -Object $o -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
+
+  return ($null -ne $file)
 }
 
-if (!$paymentRequiredFilePath) {
-  $paymentRequiredFilePath = Get-PropValue -Object $phase1 -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
+$paymentRequiredFilePath = $null
+
+if ($paymentRequiredFileObjects.Count -gt 0) {
+  $paymentRequiredFilePath = Get-PropValue -Object $paymentRequiredFileObjects[0] -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
 }
 
 if (!$freePaymentHash) {
@@ -362,6 +408,10 @@ if (!$paymentRequiredFilePath) {
   Stop-Guide "paymentRequiredFilePath not found."
 }
 
+if (!(Test-Path $paymentRequiredFilePath)) {
+  Stop-Guide "paymentRequiredFilePath does not exist on disk: $paymentRequiredFilePath"
+}
+
 Write-Host ""
 Write-Host "Free option selected:"
 Write-Host "amount=0"
@@ -372,16 +422,17 @@ Write-Host ""
 
 Write-Host "Phase2: building fresh claim..."
 
-$phase2Result = Invoke-NodeChecked -Arguments @(".\buildX402Payment.js", "--paymentRequiredFilePath", "$paymentRequiredFilePath", "--paymentHash", "$freePaymentHash") -WorkingDirectory $buildDir -Label "phase2-build-fresh-claim"
-$phase2Text = $phase2Result.Text
-$phase2Path = Join-Path $buildDir ("phase2-combined-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".txt")
+$phase2Result = Invoke-NodeChecked -Arguments @(".\buildX402Payment.js", "--paymentRequiredFilePath", "$paymentRequiredFilePath", "--paymentHash", "$freePaymentHash") -WorkingDirectory $buildDir -Label "phase2-build-fresh-claim" -AllowValidJsonAfterCleanupAssertion
+$phase2Text = $phase2Result.Stdout
+
+$phase2Path = Join-Path $buildDir ("phase2-stdout-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".txt")
 $phase2Text | Set-Content -Encoding UTF8 $phase2Path
 
 $phase2 = ConvertFrom-MixedJsonText -Text $phase2Text
 
 if ($null -eq $phase2) {
   Write-Host $phase2Text
-  Stop-Guide "Could not parse Phase2 output as JSON. Saved raw output to: $phase2Path"
+  Stop-Guide "Could not parse Phase2 stdout as JSON. Saved raw output to: $phase2Path"
 }
 
 $claimId = $null

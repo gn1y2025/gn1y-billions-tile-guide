@@ -122,3 +122,35 @@ Success requires:
 - `SUBMIT OK`
 - `Proof saved to:`
 - visible proof JSON path
+
+## Case: Node cleanup assertion after valid JSON
+
+Symptoms:
+
+- Phase1 prints valid JSON.
+- The JSON contains a free option with `amount=0`.
+- stderr prints `Assertion failed`.
+- stderr mentions `UV_HANDLE_CLOSING` or `async.c`.
+
+Meaning:
+
+On some Windows/Node setups, the helper may produce valid JSON and then crash during Node cleanup.
+
+The guide script may continue only if the JSON is valid and all safety checks pass.
+
+This is not success by itself.
+
+Success still requires:
+
+- `SUBMIT OK`
+- `Paid=false`
+- `amount=0`
+- `Proof saved to:`
+
+If valid JSON is missing, stop.
+
+If `claim_id` is missing, stop.
+
+If submit fails, stop.
+
+Do not treat Phase1 JSON as a claimed Tile.
