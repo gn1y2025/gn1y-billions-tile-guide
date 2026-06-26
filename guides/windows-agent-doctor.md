@@ -160,3 +160,19 @@ amount > 0
 Before sharing Doctor output, read:
 
 [../PRIVACY.md](../PRIVACY.md)
+
+## If Doctor says old skill or no x402
+
+If Windows Agent Doctor finds verified-agent-identity but says buildX402Payment.js is missing, the skill is not ready for the Tile flow.
+
+Do not claim.
+
+Open:
+
+    guides/update-identity-skill.md
+
+Then use:
+
+    Safe Git upgrade for old skill without x402
+
+After upgrading, run Doctor again for the same agent folder.

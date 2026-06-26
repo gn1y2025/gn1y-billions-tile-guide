@@ -183,3 +183,25 @@ Beginner rule:
     Keep defaults, skip optional channels/search/tools, use only a model-provider API key, and never paste crypto secrets.
 
 After onboard finishes, run Windows Agent Doctor again. Do not run claim commands until Doctor says READY TO CLAIM.
+
+## Route: old identity skill without x402
+
+Use this route if Windows Agent Doctor says:
+
+- OUTDATED / NOT X402 READY
+- buildX402Payment.js missing
+- old verified-agent-identity skill
+- package.json missing
+- multiple verified-agent-identity folders found
+
+Do not run claim commands.
+
+Open:
+
+    guides/update-identity-skill.md
+
+Then read:
+
+    Safe Git upgrade for old skill without x402
+
+After the upgrade, run Windows Agent Doctor again. Continue to the free claim route only if Doctor says READY TO CLAIM.
