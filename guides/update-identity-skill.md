@@ -166,7 +166,7 @@ Use this route when Windows Agent Doctor says one of these:
 - buildX402Payment.js missing
 - old verified-agent-identity skill
 - multiple verified-agent-identity folders found
-- package.json missing
+- scripts/package.json missing
 - skill exists, but it is not x402-ready
 
 Do not run claim commands in this state.
@@ -183,7 +183,7 @@ This route:
 - clones the official BillionsNetwork/verified-agent-identity repository
 - verifies that the fresh copy contains scripts/buildX402Payment.js
 - installs the fresh skill into .agents/skills/verified-agent-identity
-- runs npm install if package.json exists
+- runs npm install inside the scripts folder if scripts/package.json exists
 - runs scripts/getIdentities.js after upgrade
 - tells you to run Windows Agent Doctor again
 
@@ -242,6 +242,8 @@ Review the output before continuing.
 
     Write-Host "=== Safe Git upgrade for verified-agent-identity ==="
     Write-Host "This does NOT claim Tiles."
+    Write-Host "This does NOT submit anything."
+    Write-Host "This does NOT spend funds."
     Write-Host "This backs up old skill folders before replacing the project skill."
     Write-Host "Backup folders are local only."
     Write-Host "Nothing from the backup step is uploaded anywhere."
@@ -257,11 +259,13 @@ Review the output before continuing.
     $AgentRoot = (Resolve-Path $AgentRoot).Path
     $AgentName = Split-Path $AgentRoot -Leaf
     $Stamp = Get-Date -Format "yyyyMMdd-HHmmss"
+
     $BackupRoot = Join-Path $env:USERPROFILE "billions-tile-guide-backups\$AgentName-$Stamp"
     $TempRoot = Join-Path $env:TEMP "billions-verified-agent-identity-$Stamp"
     $FreshClone = Join-Path $TempRoot "verified-agent-identity"
     $ProjectSkillsRoot = Join-Path $AgentRoot ".agents\skills"
     $ProjectSkill = Join-Path $ProjectSkillsRoot "verified-agent-identity"
+    $StableHome = Join-Path $AgentRoot "openclaw-home"
 
     New-Item -ItemType Directory -Force -Path $BackupRoot | Out-Null
     New-Item -ItemType Directory -Force -Path $ProjectSkillsRoot | Out-Null
@@ -273,8 +277,11 @@ Review the output before continuing.
     Write-Host ""
     Write-Host "BackupRoot:"
     Write-Host $BackupRoot
-
     Write-Host ""
+    Write-Host "FreshClone:"
+    Write-Host $FreshClone
+    Write-Host ""
+
     Write-Host "=== Find existing verified-agent-identity folders ==="
 
     $OldSkills = @(Get-ChildItem -Path $AgentRoot -Recurse -Directory -Filter "verified-agent-identity" -ErrorAction SilentlyContinue)
@@ -290,9 +297,16 @@ Review the output before continuing.
         $safeName = ($skill.FullName -replace '[:\\\/]', '_')
         $dest = Join-Path $BackupRoot $safeName
 
-        Copy-Item -Path $skill.FullName -Destination $dest -Recurse -Force
-        Write-Host "Backed up to:"
+        New-Item -ItemType Directory -Force -Path $dest | Out-Null
+
+        Write-Host "Backing up old skill folder without node_modules/.git:"
         Write-Host $dest
+
+        robocopy $skill.FullName $dest /E /XD node_modules .git /NFL /NDL /NJH /NJS /NP | Out-Null
+
+        if ($LASTEXITCODE -gt 7) {
+          throw "STOP: robocopy backup failed for $($skill.FullName)"
+        }
       }
     }
 
@@ -310,6 +324,7 @@ Review the output before continuing.
     }
 
     $RequiredFreshFiles = @(
+      "scripts\package.json",
       "scripts\getIdentities.js",
       "scripts\createNewEthereumIdentity.js",
       "scripts\manualLinkHumanToAgent.js",
@@ -318,9 +333,11 @@ Review the output before continuing.
 
     foreach ($rel in $RequiredFreshFiles) {
       $p = Join-Path $FreshClone $rel
+
       if (!(Test-Path $p)) {
         throw "STOP: Fresh official skill is missing required file: $rel"
       }
+
       Write-Host "OK fresh file:" $rel
     }
 
@@ -329,7 +346,9 @@ Review the output before continuing.
 
     if (Test-Path $ProjectSkill) {
       $backupProject = Join-Path $BackupRoot "previous-project-skill"
+
       Move-Item -Path $ProjectSkill -Destination $backupProject -Force
+
       Write-Host "Moved old project skill to:"
       Write-Host $backupProject
     }
@@ -337,6 +356,7 @@ Review the output before continuing.
     Copy-Item -Path $FreshClone -Destination $ProjectSkill -Recurse -Force
 
     $gitFolder = Join-Path $ProjectSkill ".git"
+
     if (Test-Path $gitFolder) {
       Remove-Item $gitFolder -Recurse -Force
     }
@@ -345,40 +365,67 @@ Review the output before continuing.
     Write-Host $ProjectSkill
 
     Write-Host ""
-    Write-Host "=== npm install inside fresh skill ==="
+    Write-Host "=== npm install inside scripts folder ==="
 
-    Push-Location $ProjectSkill
+    $ScriptsRoot = Join-Path $ProjectSkill "scripts"
 
-    if (Test-Path "package.json") {
-      npm install
-      if ($LASTEXITCODE -ne 0) {
-        Pop-Location
-        throw "STOP: npm install failed inside the fresh skill."
-      }
-      Write-Host "OK: npm install completed."
-    } else {
-      Write-Host "WARNING: package.json not found in fresh skill. Continue only if the official repo structure changed."
+    if (!(Test-Path (Join-Path $ScriptsRoot "package.json"))) {
+      throw "STOP: scripts/package.json missing in fresh skill. Official skill structure is incomplete."
     }
+
+    Push-Location $ScriptsRoot
+
+    npm install
+
+    if ($LASTEXITCODE -ne 0) {
+      Pop-Location
+      throw "STOP: npm install failed inside scripts folder."
+    }
+
+    Pop-Location
+
+    Write-Host "OK: npm install completed inside scripts folder."
 
     Write-Host ""
     Write-Host "=== Check identities after upgrade ==="
 
-    if (Test-Path ".\scripts\getIdentities.js") {
-      node .\scripts\getIdentities.js
+    if (Test-Path $StableHome) {
+      $OldHome = $env:HOME
+      $env:HOME = $StableHome
+
+      Write-Host "Using HOME for this check:"
+      Write-Host $env:HOME
     } else {
-      Pop-Location
-      throw "STOP: getIdentities.js missing after upgrade."
+      $OldHome = $null
+      Write-Host "WARN: openclaw-home not found. Using current HOME:"
+      Write-Host $env:HOME
     }
 
+    Push-Location $ProjectSkill
+
+    node .\scripts\getIdentities.js
+
+    $IdentityExit = $LASTEXITCODE
+
     Pop-Location
+
+    if (![string]::IsNullOrWhiteSpace($OldHome)) {
+      $env:HOME = $OldHome
+    }
 
     Write-Host ""
     Write-Host "=== Upgrade completed ==="
     Write-Host "Now run Windows Agent Doctor again for this exact AgentRoot:"
     Write-Host $AgentRoot
     Write-Host ""
+    Write-Host "Use targeted mode. Doctor should check only this agent:"
+    Write-Host "powershell -NoProfile -ExecutionPolicy Bypass -File <doctor-file> -AgentRoot `"$AgentRoot`""
+    Write-Host ""
     Write-Host "Do not claim unless Doctor says READY TO CLAIM."
-    Write-Host "If getIdentities.js says No identities found, do not claim. Create or restore this agent's identity and pair/link it first."
+    Write-Host "If getIdentities.js says No identities found, do not claim."
+    Write-Host "Create or restore this agent's identity and pair/link it first."
+    Write-Host ""
+    Write-Host "This command does not restore or move identity files automatically."
 
 ### Optional workspace note
 

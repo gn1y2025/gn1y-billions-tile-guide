@@ -176,3 +176,17 @@ Then use:
     Safe Git upgrade for old skill without x402
 
 After upgrading, run Doctor again for the same agent folder.
+
+## Targeted single-agent mode
+
+If you already know the exact agent folder, run Doctor with `-AgentRoot`.
+
+In targeted mode, Doctor must check only that exact agent folder.
+
+It must not scan every folder under `D:\agents`.
+
+Example:
+
+    powershell -NoProfile -ExecutionPolicy Bypass -File <doctor-file> -AgentRoot "D:\agents\my-agent-name"
+
+Use this mode on multi-agent PCs to avoid confusing output and to avoid printing unrelated agent paths or DID data.

@@ -58,6 +58,7 @@ function Guess-AgentRootFromSkill([string]$SkillPath) {
   $markers = @(
     "\.agents\skills\verified-agent-identity",
     "\openclaw-home\.openclaw\workspace\skills\verified-agent-identity",
+    "\openclaw-state\sandboxes\",
     "\skills\verified-agent-identity"
   )
 
@@ -91,6 +92,23 @@ function Add-UniquePath([System.Collections.Generic.List[string]]$List, [string]
   }
 }
 
+function Get-AgentHome([string]$Root) {
+  $candidates = @(
+    (Join-Path $Root "openclaw-home"),
+    (Join-Path $Root ".openclaw"),
+    $env:HOME,
+    $env:USERPROFILE
+  )
+
+  foreach ($c in $candidates) {
+    if (![string]::IsNullOrWhiteSpace($c) -and (Test-Path $c)) {
+      return (Resolve-Path $c).Path
+    }
+  }
+
+  return $env:USERPROFILE
+}
+
 function Assess-Agent([string]$Root) {
   Title "AGENT CHECK: $Root"
 
@@ -98,7 +116,7 @@ function Assess-Agent([string]$Root) {
     AgentRoot = $Root
     SkillFound = $false
     SkillPath = ""
-    HasPackageJson = $false
+    HasScriptsPackageJson = $false
     HasGetIdentities = $false
     HasCreateIdentity = $false
     HasManualLink = $false
@@ -134,9 +152,9 @@ function Assess-Agent([string]$Root) {
     }
   }
 
-  $skill = $skillFolders | Where-Object {
-    Test-Path (Join-Path $_.FullName "scripts\buildX402Payment.js")
-  } | Select-Object -First 1
+  $skill = $skillFolders |
+    Where-Object { Test-Path (Join-Path $_.FullName "scripts\buildX402Payment.js") } |
+    Select-Object -First 1
 
   if (!$skill) {
     $skill = $skillFolders | Select-Object -First 1
@@ -148,13 +166,13 @@ function Assess-Agent([string]$Root) {
   Good "verified-agent-identity found:"
   Write-Host $skill.FullName
 
-  $pkg = Join-Path $skill.FullName "package.json"
+  $scriptsPackage = Join-Path $skill.FullName "scripts\package.json"
   $getIds = Join-Path $skill.FullName "scripts\getIdentities.js"
   $createId = Join-Path $skill.FullName "scripts\createNewEthereumIdentity.js"
   $manualLink = Join-Path $skill.FullName "scripts\manualLinkHumanToAgent.js"
   $buildX402 = Join-Path $skill.FullName "scripts\buildX402Payment.js"
 
-  $result.HasPackageJson = Test-ExistingFile $pkg "package.json"
+  $result.HasScriptsPackageJson = Test-ExistingFile $scriptsPackage "scripts/package.json"
   $result.HasGetIdentities = Test-ExistingFile $getIds "scripts/getIdentities.js"
   $result.HasCreateIdentity = Test-ExistingFile $createId "scripts/createNewEthereumIdentity.js"
   $result.HasManualLink = Test-ExistingFile $manualLink "scripts/manualLinkHumanToAgent.js"
@@ -187,10 +205,22 @@ function Assess-Agent([string]$Root) {
 
   Title "RUNNING IDENTITY CHECK"
 
+  $agentHome = Get-AgentHome $Root
+  $oldHome = $env:HOME
+
+  Info "Using HOME for identity check:"
+  Write-Host $agentHome
+
+  $env:HOME = $agentHome
+
   Push-Location $skill.FullName
   $identityRaw = & node "scripts\getIdentities.js" 2>&1
   $exitCode = $LASTEXITCODE
   Pop-Location
+
+  if (![string]::IsNullOrWhiteSpace($oldHome)) {
+    $env:HOME = $oldHome
+  }
 
   $identityText = ($identityRaw | Out-String)
 
@@ -238,65 +268,71 @@ Info "It does not spend funds."
 Info "It only searches and tells you what to do next."
 
 $candidateRoots = New-Object System.Collections.Generic.List[string]
+$targetedMode = ![string]::IsNullOrWhiteSpace($AgentRoot)
 
-if (![string]::IsNullOrWhiteSpace($AgentRoot)) {
+if ($targetedMode) {
+  Title "TARGETED MODE"
+  Info "AgentRoot was provided. Doctor will check only this exact agent folder."
   Add-UniquePath $candidateRoots $AgentRoot
-}
-
-foreach ($sr in $SearchRoots) {
-  Add-UniquePath $candidateRoots $sr
-}
-
-$commonRoots = @(
-  "D:\agents",
-  "C:\agents",
-  "$env:USERPROFILE\agents",
-  "$env:USERPROFILE\Desktop",
-  "$env:USERPROFILE\.openclaw"
-)
-
-foreach ($cr in $commonRoots) {
-  if (Test-Path $cr) {
-    Info "Search root exists: $cr"
-
-    $skills = @(Find-SkillFolders $cr)
-
-    foreach ($s in $skills) {
-      $guess = Guess-AgentRootFromSkill $s.FullName
-      Add-UniquePath $candidateRoots $guess
-    }
-
-    try {
-      $configs = @(Get-ChildItem -Path $cr -Filter "openclaw.json" -Recurse -Depth 6 -ErrorAction SilentlyContinue | Where-Object {
-        $_.FullName -match "\\config\\openclaw\.json$"
-      })
-
-      foreach ($cfg in $configs) {
-        $rootGuess = Split-Path (Split-Path $cfg.FullName -Parent) -Parent
-        Add-UniquePath $candidateRoots $rootGuess
-      }
-    } catch {}
-  }
-}
-
-$openclaw = Get-Command openclaw -ErrorAction SilentlyContinue
-
-if ($openclaw) {
-  Title "OPENCLAW CLI CHECK"
-  $bindings = & openclaw agents list --bindings 2>&1
-  Write-Host ($bindings | Out-String)
-
-  $text = ($bindings | Out-String)
-  $pathMatches = [regex]::Matches($text, '[A-Za-z]:\\[^\r\n\|"]+')
-
-  foreach ($m in $pathMatches) {
-    $p = $m.Value.Trim()
-    if (Test-Path $p) {
-      Add-UniquePath $candidateRoots $p
-    }
-  }
 } else {
-  Warn "OpenClaw CLI not found in PATH. Doctor will continue with folder search."
+  Title "AUTO-DISCOVERY MODE"
+  Info "No AgentRoot was provided. Doctor will search common local agent folders."
+
+  foreach ($sr in $SearchRoots) {
+    Add-UniquePath $candidateRoots $sr
+  }
+
+  $commonRoots = @(
+    "D:\agents",
+    "C:\agents",
+    "$env:USERPROFILE\agents",
+    "$env:USERPROFILE\Desktop",
+    "$env:USERPROFILE\.openclaw"
+  )
+
+  foreach ($cr in $commonRoots) {
+    if (Test-Path $cr) {
+      Info "Search root exists: $cr"
+
+      $skills = @(Find-SkillFolders $cr)
+
+      foreach ($s in $skills) {
+        $guess = Guess-AgentRootFromSkill $s.FullName
+        Add-UniquePath $candidateRoots $guess
+      }
+
+      try {
+        $configs = @(Get-ChildItem -Path $cr -Filter "openclaw.json" -Recurse -Depth 6 -ErrorAction SilentlyContinue |
+          Where-Object { $_.FullName -match "\\config\\openclaw\.json$" })
+
+        foreach ($cfg in $configs) {
+          $rootGuess = Split-Path (Split-Path $cfg.FullName -Parent) -Parent
+          Add-UniquePath $candidateRoots $rootGuess
+        }
+      } catch {}
+    }
+  }
+
+  $openclaw = Get-Command openclaw -ErrorAction SilentlyContinue
+
+  if ($openclaw) {
+    Title "OPENCLAW CLI CHECK"
+
+    $bindings = & openclaw agents list --bindings 2>&1
+    Write-Host ($bindings | Out-String)
+
+    $text = ($bindings | Out-String)
+    $pathMatches = [regex]::Matches($text, '[A-Za-z]:\\[^\r\n\|"]+')
+
+    foreach ($m in $pathMatches) {
+      $p = $m.Value.Trim()
+      if (Test-Path $p) {
+        Add-UniquePath $candidateRoots $p
+      }
+    }
+  } else {
+    Warn "OpenClaw CLI not found in PATH. Doctor will continue with folder search."
+  }
 }
 
 Title "CANDIDATE AGENT FOLDERS"
@@ -348,7 +384,7 @@ if ($ready.Count -gt 0) {
   Write-Host "- correct agent folder"
   Write-Host "- correct DID/default identity"
   Write-Host "- human link is verified"
-  Write-Host "- buildX402Payment.js exists"
+  Write-Host "- scripts/buildX402Payment.js exists"
   Write-Host ""
   Write-Host "Next:"
   Write-Host "1. Open GitHub repo."
@@ -361,6 +397,7 @@ if ($ready.Count -gt 0) {
   Write-Host "- 10 USDC"
   Write-Host "- amount=10000000"
   Write-Host "- any amount greater than 0"
+  Write-Host "- Paid=true"
   Write-Host ""
   Write-Host "NEXT STEP: Open guides/free-claim-copy-paste-windows.md only after manual verification." -ForegroundColor Cyan
   exit 0

@@ -205,3 +205,19 @@ Then read:
     Safe Git upgrade for old skill without x402
 
 After the upgrade, run Windows Agent Doctor again. Continue to the free claim route only if Doctor says READY TO CLAIM.
+
+## Doctor targeted mode for multi-agent PCs
+
+If you have many agents, do not rely on broad auto-discovery when troubleshooting one agent.
+
+Run Windows Agent Doctor with the exact agent folder.
+
+Example:
+
+    powershell -NoProfile -ExecutionPolicy Bypass -File <doctor-file> -AgentRoot "D:\agents\snus"
+
+Expected behavior:
+
+- Doctor checks only that agent.
+- Doctor does not scan every folder in `D:\agents`.
+- Doctor prints one final result for the selected agent.

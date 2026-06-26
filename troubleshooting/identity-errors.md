@@ -260,3 +260,23 @@ Important:
 Do not copy identity files from another agent.
 
 If getIdentities.js says No identities found, your local identity is missing from the skill folder being used. Create or restore the correct identity and pair/link it with the correct Billions human account before claim.
+
+## Case: Cannot find module after Git upgrade
+
+Symptom:
+
+    Cannot find module '@0xpolygonid/js-sdk'
+
+Meaning:
+
+The fresh skill code exists, but dependencies were not installed from the correct folder.
+
+The official verified-agent-identity repository stores its Node dependencies in:
+
+    scripts/package.json
+
+Fix:
+
+Run npm install inside the `scripts` folder, not the skill root.
+
+Do not claim until getIdentities.js runs successfully and Windows Agent Doctor says READY TO CLAIM.
