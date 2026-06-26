@@ -203,6 +203,35 @@ Never copy identity files from another agent.
 
 If getIdentities.js says No identities found after the upgrade, do not claim. Create or restore the correct identity, link/pair it with the correct Billions human account, and then run Windows Agent Doctor again.
 
+### What local folders this command creates
+
+This command creates local folders on your own PC only.
+
+Nothing from the backup step is uploaded to gn1y, GitHub, Billions, OpenClaw, or any server.
+
+The command uses these local folders:
+
+- Backup folder inside your Windows user profile:
+  - `$env:USERPROFILE\billions-tile-guide-backups\...`
+  - This stores copies of old `verified-agent-identity` folders before replacement.
+  - Do not share this folder publicly. It may contain identity-related local files.
+
+- Temporary folder inside your Windows temp folder:
+  - `$env:TEMP\billions-verified-agent-identity-...`
+  - This stores a temporary Git clone of the official `BillionsNetwork/verified-agent-identity` repository.
+
+- Project skill folder inside your selected agent:
+  - `<your-agent-folder>\.agents\skills\verified-agent-identity`
+  - This is where the fresh skill copy is installed.
+
+Important:
+
+- Backup folders are local only.
+- Backup folders may contain sensitive identity-related data.
+- Do not upload backup folders.
+- Do not post screenshots of backup contents.
+- Do not send backup folders to support unless you fully understand what is inside and have redacted sensitive data.
+
 ### Windows safe Git upgrade command
 
 Run this only for the agent that Doctor says has an old or non-x402 skill.
@@ -214,6 +243,9 @@ Review the output before continuing.
     Write-Host "=== Safe Git upgrade for verified-agent-identity ==="
     Write-Host "This does NOT claim Tiles."
     Write-Host "This backs up old skill folders before replacing the project skill."
+    Write-Host "Backup folders are local only."
+    Write-Host "Nothing from the backup step is uploaded anywhere."
+    Write-Host "Do not share backup folder contents publicly."
     Write-Host ""
 
     $AgentRoot = Read-Host "Paste the full path to your OpenClaw agent folder"
@@ -225,8 +257,8 @@ Review the output before continuing.
     $AgentRoot = (Resolve-Path $AgentRoot).Path
     $AgentName = Split-Path $AgentRoot -Leaf
     $Stamp = Get-Date -Format "yyyyMMdd-HHmmss"
-    $BackupRoot = Join-Path $env:USERPROFILE "gn1y-skill-backups\$AgentName-$Stamp"
-    $TempRoot = Join-Path $env:TEMP "gn1y-verified-agent-identity-$Stamp"
+    $BackupRoot = Join-Path $env:USERPROFILE "billions-tile-guide-backups\$AgentName-$Stamp"
+    $TempRoot = Join-Path $env:TEMP "billions-verified-agent-identity-$Stamp"
     $FreshClone = Join-Path $TempRoot "verified-agent-identity"
     $ProjectSkillsRoot = Join-Path $AgentRoot ".agents\skills"
     $ProjectSkill = Join-Path $ProjectSkillsRoot "verified-agent-identity"

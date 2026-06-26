@@ -129,3 +129,15 @@ Use:
 If you are unsure what a command, website, wallet popup, or AI agent action does:
 
 **STOP.**
+
+## Local backup folder safety
+
+Some repair or upgrade commands may create local backup folders such as:
+
+    $env:USERPROFILE\billions-tile-guide-backups\...
+
+These folders are created on your own PC only.
+
+Do not share them publicly.
+
+They may contain identity-related local files, old skill files, logs, or other sensitive setup data.
