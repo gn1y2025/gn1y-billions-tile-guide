@@ -167,3 +167,19 @@ Redact anything you do not want public.
 ## Final command safety reminder
 
 Do not run claim commands until Windows Agent Doctor says READY TO CLAIM and the guide tells you to open the free claim route.
+
+## OpenClaw onboard menu help
+
+If you are creating a new agent and OpenClaw shows an onboard menu, open this file:
+
+    guides/create-agent.md
+
+Then read this section:
+
+    What to choose in OpenClaw onboard
+
+Beginner rule:
+
+    Keep defaults, skip optional channels/search/tools, use only a model-provider API key, and never paste crypto secrets.
+
+After onboard finishes, run Windows Agent Doctor again. Do not run claim commands until Doctor says READY TO CLAIM.

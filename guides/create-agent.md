@@ -206,6 +206,64 @@ prepare instant free Tile claim
 
 If you are only testing agent creation, stop after Gateway/Dashboard and do not claim Tiles.
 
+## What to choose in OpenClaw onboard
+
+OpenClaw onboarding can show different questions depending on your operating system, existing OpenClaw config, and OpenClaw version.
+
+If you are a beginner, do not guess. Use the safe choices below.
+
+### Safe beginner choices
+
+| OpenClaw onboard question | Recommended choice for this guide |
+|---|---|
+| Install daemon / install background service | Choose Yes or the default option. This helps OpenClaw keep the local Gateway running. |
+| Gateway mode | Choose local or default. Do not configure a remote Gateway unless you understand it. |
+| Gateway port | Keep the default unless OpenClaw says the port is already busy. |
+| Workspace path | Keep the default unless you intentionally use a separate workspace. |
+| Agent name | Use your own unique name, for example my-agent-name. Do not use main because main can be reserved/default. |
+| Model provider | Choose a provider where you already have a valid API key. |
+| API key | Paste only the model-provider API key. Never paste seed phrases, wallet private keys, kms.json, wallet keys, or crypto secrets. |
+| Model | Choose the default model or a cheap/stable model from your provider. The Tile safety flow does not require an expensive model. |
+| Web search | Skip it, keep default, or choose a key-free option. Web search is not required for the Tile claim flow. |
+| Browser/web tools | Skip unless you know why you need them. Browser tools are not required for this guide. |
+| Channels like Telegram, Discord, Slack, WhatsApp | Skip unless you specifically want to chat with the agent there. Channels are not required for the Tile claim flow. |
+| Extra skills/tools | Do not enable random skills. For this guide, install only the verified-agent-identity skill needed for the Billions/x402 flow. |
+| Anything asking for crypto secrets | Stop. Do not enter seed phrases, wallet private keys, kms.json, or wallet recovery data. |
+
+### Simple rule
+
+Keep defaults, skip optional integrations, use only a model-provider API key, and never paste crypto secrets.
+
+### After onboard finishes
+
+Do not run claim commands yet.
+
+Run Windows Agent Doctor again and follow only the route it prints.
+
+Finishing OpenClaw onboard does not mean the agent is ready to claim a Tile.
+
+The agent is claim-ready only when Windows Agent Doctor confirms all of these:
+
+- verified-agent-identity exists
+- buildX402Payment.js exists
+- DID / default identity exists
+- READY TO CLAIM
+
+If Doctor says identity is missing, do not claim. Open the existing-agent troubleshooting route first.
+
+### If OpenClaw asks something not listed here
+
+Choose the safest option:
+
+- keep the default
+- skip optional integrations
+- do not enable unrelated tools
+- do not enter crypto secrets
+- finish setup
+- run Windows Agent Doctor again
+
+If the menu is unclear, stop and ask the community before running any claim command.
+
 ## Beginner naming example
 
 When creating a new agent, use your own unique agent name.
