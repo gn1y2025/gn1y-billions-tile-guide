@@ -1,227 +1,124 @@
 # Claim Errors
 
-Common errors during Billions AI Agentic Movie Tiles claim flow.
+Use this page when the free claim route stops, crashes, or does not print `SUBMIT OK`.
+
+## Golden rule
+
+A claim is successful only if the output shows:
+
+- `SUBMIT OK`
+- `Paid=false`
+- `amount=0`
+- `Proof saved to:`
+
+If these lines are missing, do not treat it as success.
 
 ---
 
-## Claim shows `10 USDC` but you wanted free
+## Case: node.exe Assertion failed / NativeCommandError
 
-### Meaning
+Symptoms:
 
-This is not a free claim.
+- `node.exe : Assertion failed`
+- `NativeCommandError`
+- `buildX402Payment.js` crashes
+- the script stops during Phase1 or Phase2
+- no `SUBMIT OK`
+- no proof file
 
-### Fix
+Meaning:
 
-Stop immediately.
+The Node/x402 helper crashed before the claim was submitted successfully.
 
-Do not approve payment.
+This is not a successful claim.
 
-Go to the paid tile guide only if you intentionally want a paid claim:
+Do not continue manually with partial output.
 
-```text
-guides/paid-tile.md
-```
+Fix:
 
----
+1. Stop.
+2. Save the terminal output.
+3. Check Node version with `node -v`.
+4. Re-run Windows Agent Doctor for the same exact `AgentRoot`.
+5. Confirm `scripts/package.json` and `scripts/node_modules` exist.
+6. If needed, run safe skill repair/update again.
+7. Try again only after Doctor says `READY TO CLAIM`.
 
-## `amount=10000000` appears
-
-### Meaning
-
-This may represent 10 USDC using 6 decimals.
-
-### Fix
-
-If you wanted free claim:
-
-```text
-STOP.
-```
-
-Do not continue.
-
-Only continue if you intentionally want paid claim and you understand it spends real funds.
+If the same crash repeats, try a stable Node LTS version supported by OpenClaw and reinstall dependencies inside the skill `scripts` folder.
 
 ---
 
-## `maxUseExceeded`
+## Case: Cannot find module
 
-### Meaning
+Example:
 
-The free claim may already be used or the campaign limit/rule blocked this claim.
+- `Cannot find module '@0xpolygonid/js-sdk'`
+- `MODULE_NOT_FOUND`
 
-### Fix
+Meaning:
 
-Do not try to bypass the rule.
+The skill code exists, but dependencies are missing.
 
-Based on support clarification:
+Fix:
 
-```text
-One verified human = one agent = one free tile.
-```
+Run `npm install` inside the skill `scripts` folder.
 
-If you believe this is an error, ask official support.
+Do not run `npm install` only in the skill root.
 
----
+Expected dependency folder:
 
-## Free claim unavailable
+- `<agent>\.agents\skills\verified-agent-identity\scripts\node_modules`
 
-### Possible causes
-
-- free claim already used by this verified human;
-- wrong agent identity;
-- human link not verified;
-- campaign rule changed;
-- claim flow issue.
-
-### Fix
-
-Check:
-
-```text
-Agent identity: correct
-DID: correct
-Human link: verified
-Claim type: free
-Expected amount: 0
-```
-
-If amount is not `0`, stop.
+After installing dependencies, run Windows Agent Doctor again.
 
 ---
 
-## NFT does not appear immediately
+## Case: No free amount=0 option found
 
-### Meaning
+Meaning:
 
-Explorer indexing may be delayed.
+The flow did not find a safe free Tile option.
 
-### Fix
+If a paid option exists, stop.
 
-Save the transaction hash.
+Do not continue unless you intentionally want a paid Tile.
 
-Check later.
+Stop if you see:
 
-Save:
-
-```text
-Tile ID:
-Tx hash:
-Agent address:
-DID:
-Canvas ID:
-X/Y:
-Date:
-Explorer link:
-```
+- `10 USDC`
+- `amount=10000000`
+- `amount > 0`
+- `Paid=true`
 
 ---
 
-## Transaction failed
+## Case: Submit failed
 
-### Possible causes
+Meaning:
 
-- network issue;
-- wrong claim flow;
-- expired claim payload;
-- free claim already used;
-- paid claim payment issue;
-- wallet rejected.
+The claim was generated, but the final Tile submit failed.
 
-### Fix
+Do not reuse old claims manually.
 
-Do not repeat blindly.
+Run a fresh flow only after checking the reason.
 
-Check the transaction hash if available.
+Common causes:
 
-If no funds were spent and claim failed, retry only after understanding the error.
-
----
-
-## Wrong coordinates / wrong tile area
-
-### Meaning
-
-The official flow may assign tile coordinates automatically.
-
-### Fix
-
-Do not force coordinates manually unless the official UI explicitly allows it.
-
-After success, save:
-
-```text
-X:
-Y:
-Canvas ID:
-Tile ID:
-Role:
-```
+- claim expired
+- free claim already used
+- eligibility limit
+- wrong agent
+- wrong identity
+- API/network issue
 
 ---
 
-## Website looks unofficial
+## Case: output says success but no proof
 
-### Fix
+Treat this as not proven.
 
-Stop.
+Success requires:
 
-Do not connect wallet.
-
-Do not approve anything.
-
-Only use official Billions / x402 claim flow.
-
----
-
-## Wallet asks for seed phrase or private key
-
-### Fix
-
-Stop immediately.
-
-This is unsafe.
-
-No legitimate claim flow should ask for seed phrase or private key.
-
----
-
-## Instant API claim script fails
-
-### Possible causes
-
-- `buildX402Payment.js` is missing;
-- `getIdentities.js` failed;
-- no free `amount=0` option exists;
-- only paid `amount=10000000` option exists;
-- claim expired;
-- API response shape changed;
-- wrong agent folder selected.
-
-### Fix
-
-Do not reuse old `claim_id`.
-
-Run a fresh flow only after fixing the issue.
-
-If the script shows `10 USDC`, `amount=10000000`, or any amount greater than `0`, stop.
-
----
-
-## Claim expired
-
-### Meaning
-
-The fresh claim has a short expiry window.
-
-During previous successful terminal claims, the remaining time was around 5 minutes.
-
-### Fix
-
-Do not manually reuse the old claim.
-
-Run the full flow again:
-
-```text
-Phase1 -> free amount=0 -> Phase2 -> fresh claim_id -> immediate submit
-```
+- `SUBMIT OK`
+- `Proof saved to:`
+- visible proof JSON path

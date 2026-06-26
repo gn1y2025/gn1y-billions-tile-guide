@@ -5,18 +5,23 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-Write-Host ""
-Write-Host "gn1y Billions Tile Guide - Instant Free API Claim"
-Write-Host "Mode: FREE CLAIM ONLY"
-Write-Host "This script calls the x402 flow and immediately submits a fresh claim."
-Write-Host "It must stop if only paid options are available."
-Write-Host ""
-
 function Stop-Guide([string]$Message) {
   Write-Host ""
-  Write-Host "STOP: $Message"
+  Write-Host "STOP: $Message" -ForegroundColor Red
   Write-Host ""
   exit 1
+}
+
+function Info([string]$Message) {
+  Write-Host "[INFO] $Message"
+}
+
+function Good([string]$Message) {
+  Write-Host "[OK] $Message"
+}
+
+function Warn([string]$Message) {
+  Write-Host "[CHECK] $Message"
 }
 
 function ConvertFrom-MixedJsonText {
@@ -88,6 +93,123 @@ function Get-PropValue {
   return $null
 }
 
+function Get-AgentHome([string]$Root) {
+  $candidates = @(
+    (Join-Path $Root "openclaw-home"),
+    (Join-Path $Root ".openclaw"),
+    $env:HOME,
+    $env:USERPROFILE
+  )
+
+  foreach ($c in $candidates) {
+    if (![string]::IsNullOrWhiteSpace($c) -and (Test-Path $c)) {
+      return (Resolve-Path $c).Path
+    }
+  }
+
+  return $env:USERPROFILE
+}
+
+function Invoke-NodeChecked {
+  param(
+    [Parameter(Mandatory=$true)][string[]]$Arguments,
+    [Parameter(Mandatory=$true)][string]$WorkingDirectory,
+    [Parameter(Mandatory=$true)][string]$Label
+  )
+
+  $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
+
+  if (!$nodeCmd) {
+    Stop-Guide "Node.js not found in PATH."
+  }
+
+  $safeLabel = ($Label -replace '[^A-Za-z0-9_-]', '_')
+  $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
+  $stdoutPath = Join-Path $WorkingDirectory "$safeLabel-stdout-$stamp.txt"
+  $stderrPath = Join-Path $WorkingDirectory "$safeLabel-stderr-$stamp.txt"
+
+  Write-Host ""
+  Info "Running node step: $Label"
+  Info "WorkingDirectory: $WorkingDirectory"
+  Info "stdout log: $stdoutPath"
+  Info "stderr log: $stderrPath"
+
+  $process = Start-Process `
+    -FilePath $nodeCmd.Source `
+    -ArgumentList $Arguments `
+    -WorkingDirectory $WorkingDirectory `
+    -RedirectStandardOutput $stdoutPath `
+    -RedirectStandardError $stderrPath `
+    -Wait `
+    -PassThru `
+    -NoNewWindow
+
+  $stdout = ""
+  $stderr = ""
+
+  if (Test-Path $stdoutPath) {
+    $stdout = Get-Content $stdoutPath -Raw -ErrorAction SilentlyContinue
+  }
+
+  if (Test-Path $stderrPath) {
+    $stderr = Get-Content $stderrPath -Raw -ErrorAction SilentlyContinue
+  }
+
+  $combined = ($stdout + "`n" + $stderr).Trim()
+
+  $fatalPatterns = @(
+    "Assertion failed",
+    "NativeCommandError",
+    "Cannot find module",
+    "MODULE_NOT_FOUND",
+    "UnhandledPromiseRejection",
+    "TypeError:",
+    "ReferenceError:",
+    "SyntaxError:",
+    "ERR_"
+  )
+
+  $fatalHit = $false
+
+  foreach ($pat in $fatalPatterns) {
+    if ($combined -match [regex]::Escape($pat)) {
+      $fatalHit = $true
+    }
+  }
+
+  if ($process.ExitCode -ne 0 -or $fatalHit) {
+    Write-Host ""
+    Write-Host "=== NODE STEP FAILED: $Label ===" -ForegroundColor Red
+    Write-Host "ExitCode: $($process.ExitCode)"
+    Write-Host ""
+    Write-Host "--- stdout ---"
+    Write-Host $stdout
+    Write-Host ""
+    Write-Host "--- stderr ---"
+    Write-Host $stderr
+    Write-Host ""
+    Write-Host "Raw logs saved:"
+    Write-Host $stdoutPath
+    Write-Host $stderrPath
+    Stop-Guide "Node/buildX402Payment step failed. This is NOT a successful claim. Do not continue."
+  }
+
+  return [pscustomobject]@{
+    Text = $combined
+    StdoutPath = $stdoutPath
+    StderrPath = $stderrPath
+    ExitCode = $process.ExitCode
+  }
+}
+
+Write-Host ""
+Write-Host "gn1y Billions Tile Guide - Instant Free API Claim"
+Write-Host "Mode: FREE CLAIM ONLY"
+Write-Host "This script calls the x402 flow and immediately submits a fresh claim."
+Write-Host "It must stop if only paid options are available."
+Write-Host "Claim success requires SUBMIT OK and Proof saved to:"
+Write-Host ""
+
 if (!$AgentRoot) {
   $AgentRoot = Read-Host "Paste the full path to your OpenClaw agent folder"
 }
@@ -95,6 +217,8 @@ if (!$AgentRoot) {
 if (!(Test-Path $AgentRoot)) {
   Stop-Guide "Agent folder not found: $AgentRoot"
 }
+
+$AgentRoot = (Resolve-Path $AgentRoot).Path
 
 Write-Host "Agent folder:"
 Write-Host $AgentRoot
@@ -115,256 +239,264 @@ if ($buildScripts.Count -gt 1) {
 
 $buildScript = $buildScripts[0].FullName
 $buildDir = Split-Path $buildScript -Parent
+$skillRoot = Split-Path $buildDir -Parent
 
 Write-Host "Using buildX402Payment.js:"
 Write-Host $buildScript
 Write-Host ""
 
-$node = Get-Command node -ErrorAction SilentlyContinue
-
-if (!$node) {
-  Stop-Guide "Node.js not found."
+if (!(Test-Path (Join-Path $buildDir "getIdentities.js"))) {
+  Stop-Guide "getIdentities.js not found. Official guardrail requires identity check before buildX402Payment.js."
 }
 
-$proofDir = Join-Path $env:USERPROFILE "gn1y-tile-proofs"
-New-Item -ItemType Directory -Force -Path $proofDir | Out-Null
+if (!(Test-Path (Join-Path $buildDir "package.json"))) {
+  Stop-Guide "scripts/package.json not found. Run safe skill upgrade/repair first."
+}
 
-Push-Location $buildDir
+if (!(Test-Path (Join-Path $buildDir "node_modules"))) {
+  Stop-Guide "scripts/node_modules not found. Run npm install inside the skill scripts folder first."
+}
 
-try {
-  Write-Host "Identity check before x402..."
-  Write-Host ""
+$agentHome = Get-AgentHome $AgentRoot
+$oldHome = $env:HOME
+$env:HOME = $agentHome
 
-  if (!(Test-Path ".\getIdentities.js")) {
-    Stop-Guide "getIdentities.js not found. Official guardrail requires identity check before buildX402Payment.js."
+Write-Host "Using HOME for this claim flow:"
+Write-Host $env:HOME
+Write-Host ""
+
+Write-Host "Identity check before x402..."
+$identityResult = Invoke-NodeChecked -Arguments @(".\getIdentities.js") -WorkingDirectory $buildDir -Label "identity-check"
+$identityText = $identityResult.Text
+
+Write-Host ""
+Write-Host $identityText
+Write-Host ""
+
+if ($identityText -notmatch "did:" -and $identityText -notmatch '"did"\s*:') {
+  Stop-Guide "No DID/default identity detected. Do not claim."
+}
+
+Write-Host "Continue only if DID/default identity/human link are correct for this agent."
+Write-Host ""
+
+$resource = "https://x402.billions.network/api/v1/canvas/current"
+$submitUrl = "https://x402.billions.network/api/v1/tiles"
+
+Write-Host "Phase1: requesting x402 challenge..."
+Write-Host $resource
+
+$phase1Result = Invoke-NodeChecked -Arguments @(".\buildX402Payment.js", "--resource", $resource) -WorkingDirectory $buildDir -Label "phase1-build-x402-payment"
+$phase1Text = $phase1Result.Text
+$phase1Path = Join-Path $buildDir ("phase1-combined-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".txt")
+$phase1Text | Set-Content -Encoding UTF8 $phase1Path
+
+$phase1 = ConvertFrom-MixedJsonText -Text $phase1Text
+
+if ($null -eq $phase1) {
+  Write-Host $phase1Text
+  Stop-Guide "Could not parse Phase1 output as JSON. Saved raw output to: $phase1Path"
+}
+
+$allPaymentCandidates = Find-ObjectsRecursive -Node $phase1 -Predicate {
+  param($o)
+
+  $amount = Get-PropValue -Object $o -Names @("amount", "maxAmountRequired", "value")
+  $hash = Get-PropValue -Object $o -Names @("paymentHash", "hash")
+  $file = Get-PropValue -Object $o -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
+
+  return ($null -ne $amount -and ($null -ne $hash -or $null -ne $file))
+}
+
+$paidCandidates = @()
+$freeCandidates = @()
+
+foreach ($candidate in $allPaymentCandidates) {
+  $amount = Get-PropValue -Object $candidate -Names @("amount", "maxAmountRequired", "value")
+
+  if ("$amount" -eq "0") {
+    $freeCandidates += $candidate
   }
 
-  $identityRaw = & node ".\getIdentities.js" 2>&1
-  $identityText = ($identityRaw | Out-String)
+  $parsedAmount = 0
+  $isNumber = [decimal]::TryParse("$amount", [ref]$parsedAmount)
 
-  if ($LASTEXITCODE -ne 0) {
-    Write-Host $identityText
-    Stop-Guide "getIdentities.js failed. Do not continue."
+  if ("$amount" -eq "10000000" -or ($isNumber -and $parsedAmount -gt 0)) {
+    $paidCandidates += $candidate
+  }
+}
+
+if ($freeCandidates.Count -eq 0) {
+  if ($paidCandidates.Count -gt 0) {
+    Stop-Guide "No free amount=0 option found. Paid option exists. Do not continue unless intentionally doing paid claim."
   }
 
-  Write-Host $identityText
-  Write-Host ""
-  Write-Host "Continue only if DID/default identity/human link are correct for this agent."
-  Write-Host ""
+  Write-Host $phase1Text
+  Stop-Guide "No free amount=0 option found in Phase1 output."
+}
 
-  $resource = "https://x402.billions.network/api/v1/canvas/current"
-  $submitUrl = "https://x402.billions.network/api/v1/tiles"
+$free = $freeCandidates[0]
+$freeAmount = Get-PropValue -Object $free -Names @("amount", "maxAmountRequired", "value")
+$freePaymentHash = Get-PropValue -Object $free -Names @("paymentHash", "hash")
+$paymentRequiredFilePath = Get-PropValue -Object $free -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
 
-  Write-Host "Phase1: requesting x402 challenge..."
-  Write-Host $resource
-  Write-Host ""
+if ("$freeAmount" -ne "0") {
+  Stop-Guide "Selected option is not free. Amount: $freeAmount"
+}
 
-  $phase1Raw = & node ".\buildX402Payment.js" --resource $resource 2>&1
-  $phase1Text = ($phase1Raw | Out-String)
-  $phase1Path = Join-Path $proofDir ("phase1-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".txt")
-  $phase1Text | Set-Content -Encoding UTF8 $phase1Path
+if (!$freePaymentHash) {
+  $freePaymentHash = Get-PropValue -Object $phase1 -Names @("paymentHash", "hash")
+}
 
-  $phase1 = ConvertFrom-MixedJsonText -Text $phase1Text
+if (!$paymentRequiredFilePath) {
+  $paymentRequiredFilePath = Get-PropValue -Object $phase1 -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
+}
 
-  if ($null -eq $phase1) {
-    Write-Host $phase1Text
-    Stop-Guide "Could not parse Phase1 output as JSON. Saved raw output to: $phase1Path"
+if (!$freePaymentHash) {
+  Write-Host $phase1Text
+  Stop-Guide "Free paymentHash not found."
+}
+
+if (!$paymentRequiredFilePath) {
+  Write-Host $phase1Text
+  Stop-Guide "paymentRequiredFilePath not found."
+}
+
+Write-Host ""
+Write-Host "Free option selected:"
+Write-Host "amount=0"
+Write-Host "Paid=false"
+Write-Host "paymentHash=$freePaymentHash"
+Write-Host "paymentRequiredFilePath=$paymentRequiredFilePath"
+Write-Host ""
+
+Write-Host "Phase2: building fresh claim..."
+
+$phase2Result = Invoke-NodeChecked -Arguments @(".\buildX402Payment.js", "--paymentRequiredFilePath", "$paymentRequiredFilePath", "--paymentHash", "$freePaymentHash") -WorkingDirectory $buildDir -Label "phase2-build-fresh-claim"
+$phase2Text = $phase2Result.Text
+$phase2Path = Join-Path $buildDir ("phase2-combined-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".txt")
+$phase2Text | Set-Content -Encoding UTF8 $phase2Path
+
+$phase2 = ConvertFrom-MixedJsonText -Text $phase2Text
+
+if ($null -eq $phase2) {
+  Write-Host $phase2Text
+  Stop-Guide "Could not parse Phase2 output as JSON. Saved raw output to: $phase2Path"
+}
+
+$claimId = $null
+$expiresAt = $null
+
+$claimObjects = Find-ObjectsRecursive -Node $phase2 -Predicate {
+  param($o)
+
+  $cid = Get-PropValue -Object $o -Names @("claim_id", "claimId", "id")
+
+  return ($cid -and "$cid" -match "^clm_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+}
+
+if ($claimObjects.Count -gt 0) {
+  $claimId = Get-PropValue -Object $claimObjects[0] -Names @("claim_id", "claimId", "id")
+  $expiresAt = Get-PropValue -Object $claimObjects[0] -Names @("expires_at", "expiresAt", "expires")
+}
+
+if (!$claimId) {
+  $m = [regex]::Match($phase2Text, "clm_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+
+  if ($m.Success) {
+    $claimId = $m.Value
   }
+}
 
-  $allPaymentCandidates = Find-ObjectsRecursive -Node $phase1 -Predicate {
-    param($o)
+if (!$claimId) {
+  Write-Host $phase2Text
+  Stop-Guide "Fresh claim_id not found."
+}
 
-    $amount = Get-PropValue -Object $o -Names @("amount", "maxAmountRequired", "value")
-    $hash = Get-PropValue -Object $o -Names @("paymentHash", "hash")
-    $file = Get-PropValue -Object $o -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
+Write-Host "Fresh claim_id:"
+Write-Host $claimId
 
-    return ($null -ne $amount -and ($null -ne $hash -or $null -ne $file))
-  }
-
-  $paidCandidates = @()
-  $freeCandidates = @()
-
-  foreach ($candidate in $allPaymentCandidates) {
-    $amount = Get-PropValue -Object $candidate -Names @("amount", "maxAmountRequired", "value")
-
-    if ("$amount" -eq "0") {
-      $freeCandidates += $candidate
-    }
-
-    $parsedAmount = [decimal]0
-    $isNumber = [decimal]::TryParse("$amount", [ref]$parsedAmount)
-
-    if ("$amount" -eq "10000000" -or ($isNumber -and $parsedAmount -gt 0)) {
-      $paidCandidates += $candidate
-    }
-  }
-
-  if ($freeCandidates.Count -eq 0) {
-    if ($paidCandidates.Count -gt 0) {
-      Stop-Guide "No free amount=0 option found. Paid option exists. Do not continue unless intentionally doing paid claim."
-    }
-
-    Write-Host $phase1Text
-    Stop-Guide "No free amount=0 option found in Phase1 output."
-  }
-
-  $free = $freeCandidates[0]
-  $freeAmount = Get-PropValue -Object $free -Names @("amount", "maxAmountRequired", "value")
-  $freePaymentHash = Get-PropValue -Object $free -Names @("paymentHash", "hash")
-  $paymentRequiredFilePath = Get-PropValue -Object $free -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
-
-  if ("$freeAmount" -ne "0") {
-    Stop-Guide "Selected option is not free. Amount: $freeAmount"
-  }
-
-  if (!$freePaymentHash) {
-    $freePaymentHash = Get-PropValue -Object $phase1 -Names @("paymentHash", "hash")
-  }
-
-  if (!$paymentRequiredFilePath) {
-    $paymentRequiredFilePath = Get-PropValue -Object $phase1 -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
-  }
-
-  if (!$freePaymentHash) {
-    Write-Host $phase1Text
-    Stop-Guide "Free paymentHash not found."
-  }
-
-  if (!$paymentRequiredFilePath) {
-    Write-Host $phase1Text
-    Stop-Guide "paymentRequiredFilePath not found."
-  }
-
-  Write-Host "Free option selected:"
-  Write-Host "amount=0"
-  Write-Host "paymentHash=$freePaymentHash"
-  Write-Host "paymentRequiredFilePath=$paymentRequiredFilePath"
-  Write-Host ""
-
-  Write-Host "Phase2: building fresh claim..."
-  Write-Host ""
-
-  $phase2Raw = & node ".\buildX402Payment.js" --paymentRequiredFilePath "$paymentRequiredFilePath" --paymentHash "$freePaymentHash" 2>&1
-  $phase2Text = ($phase2Raw | Out-String)
-  $phase2Path = Join-Path $proofDir ("phase2-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".txt")
-  $phase2Text | Set-Content -Encoding UTF8 $phase2Path
-
-  $phase2 = ConvertFrom-MixedJsonText -Text $phase2Text
-
-  if ($null -eq $phase2) {
-    Write-Host $phase2Text
-    Stop-Guide "Could not parse Phase2 output as JSON. Saved raw output to: $phase2Path"
-  }
-
-  $claimId = $null
-  $expiresAt = $null
-
-  $claimObjects = Find-ObjectsRecursive -Node $phase2 -Predicate {
-    param($o)
-
-    $cid = Get-PropValue -Object $o -Names @("claim_id", "claimId", "id")
-    return ($cid -and "$cid" -match "^clm_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
-  }
-
-  if ($claimObjects.Count -gt 0) {
-    $claimId = Get-PropValue -Object $claimObjects[0] -Names @("claim_id", "claimId", "id")
-    $expiresAt = Get-PropValue -Object $claimObjects[0] -Names @("expires_at", "expiresAt", "expires")
-  }
-
-  if (!$claimId) {
-    $m = [regex]::Match($phase2Text, "clm_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
-
-    if ($m.Success) {
-      $claimId = $m.Value
-    }
-  }
-
-  if (!$claimId) {
-    Write-Host $phase2Text
-    Stop-Guide "Fresh claim_id not found."
-  }
-
-  Write-Host "Fresh claim_id:"
-  Write-Host $claimId
-
-  if ($expiresAt) {
-    Write-Host "Claim expires_at:"
-    Write-Host $expiresAt
-
-    try {
-      $expiresDate = [DateTimeOffset]::Parse("$expiresAt")
-      $secondsLeft = ($expiresDate - [DateTimeOffset]::UtcNow).TotalSeconds
-      Write-Host ("Seconds left: {0:N1}" -f $secondsLeft)
-
-      if ($secondsLeft -lt 30) {
-        Stop-Guide "Claim is too close to expiry. Run the script again to get a fresh claim."
-      }
-    } catch {
-      Write-Host "Could not parse expires_at, continuing immediately."
-    }
-  }
-
-  Write-Host ""
-  Write-Host "Submitting tile immediately..."
-  Write-Host ""
-
-  $cleanIntent = ($Intent -replace "[^A-Za-z ]", " ").Trim()
-
-  if (!$cleanIntent) {
-    $cleanIntent = "AI agent movie tile claim"
-  }
-
-  $body = @{
-    claim_id = $claimId
-    genome = @{
-      intent = $cleanIntent
-    }
-  }
-
-  $bodyJson = $body | ConvertTo-Json -Depth 10 -Compress
-
-  Write-Host "Submit body:"
-  Write-Host $bodyJson
-  Write-Host ""
+if ($expiresAt) {
+  Write-Host "Claim expires_at:"
+  Write-Host $expiresAt
 
   try {
-    $submitResult = Invoke-RestMethod -Uri $submitUrl -Method Post -ContentType "application/json" -Body $bodyJson
-  } catch {
-    Write-Host ""
-    Write-Host "Submit failed."
-    Write-Host $_.Exception.Message
+    $expiresDate = [DateTimeOffset]::Parse("$expiresAt")
+    $secondsLeft = ($expiresDate - [DateTimeOffset]::UtcNow).TotalSeconds
+    Write-Host ("Seconds left: {0:N1}" -f $secondsLeft)
 
-    if ($_.ErrorDetails -and $_.ErrorDetails.Message) {
-      Write-Host $_.ErrorDetails.Message
+    if ($secondsLeft -lt 30) {
+      Stop-Guide "Claim is too close to expiry. Run the script again to get a fresh claim."
     }
+  } catch {
+    Write-Host "Could not parse expires_at, continuing immediately."
+  }
+}
 
-    Stop-Guide "Tile submit failed. Do not reuse this claim manually if it expired. Run a fresh flow."
+Write-Host ""
+Write-Host "Submitting tile immediately..."
+
+$cleanIntent = ($Intent -replace "[^A-Za-z ]", " ").Trim()
+
+if (!$cleanIntent) {
+  $cleanIntent = "AI agent movie tile claim"
+}
+
+$body = @{
+  claim_id = $claimId
+  genome = @{
+    intent = $cleanIntent
+  }
+}
+
+$bodyJson = $body | ConvertTo-Json -Depth 10 -Compress
+
+Write-Host "Submit body:"
+Write-Host $bodyJson
+Write-Host ""
+
+try {
+  $submitResult = Invoke-RestMethod -Uri $submitUrl -Method Post -ContentType "application/json" -Body $bodyJson
+} catch {
+  Write-Host ""
+  Write-Host "Submit failed."
+  Write-Host $_.Exception.Message
+
+  if ($_.ErrorDetails -and $_.ErrorDetails.Message) {
+    Write-Host $_.ErrorDetails.Message
   }
 
-  $proofPath = Join-Path $proofDir ("tile-proof-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".json")
-  $submitResult | ConvertTo-Json -Depth 20 | Set-Content -Encoding UTF8 $proofPath
-
-  Write-Host ""
-  Write-Host "SUBMIT OK"
-  Write-Host "Proof saved to:"
-  Write-Host $proofPath
-  Write-Host ""
-
-  $submitResult | ConvertTo-Json -Depth 20
-
-  Write-Host ""
-  Write-Host "Save your proof:"
-  Write-Host "- Tile ID"
-  Write-Host "- Tx hash"
-  Write-Host "- Agent address"
-  Write-Host "- DID"
-  Write-Host "- Canvas ID"
-  Write-Host "- X/Y coordinates"
-  Write-Host "- Claim date"
-  Write-Host ""
-  Write-Host "Never share seed phrases, private keys, wallet keys, kms.json, or sensitive identity data."
-  Write-Host ""
+  Stop-Guide "Tile submit failed. Do not reuse this claim manually if it expired. Run a fresh flow."
 }
-finally {
-  Pop-Location
+
+$proofPath = Join-Path $buildDir ("tile-proof-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".json")
+$submitResult | ConvertTo-Json -Depth 20 | Set-Content -Encoding UTF8 $proofPath
+
+Write-Host ""
+Write-Host "SUBMIT OK"
+Write-Host "Paid=false"
+Write-Host "amount=0"
+Write-Host "Proof saved to:"
+Write-Host $proofPath
+Write-Host ""
+
+$submitResult | ConvertTo-Json -Depth 20
+
+Write-Host ""
+Write-Host "Save your proof:"
+Write-Host "- Tile ID"
+Write-Host "- Tx hash"
+Write-Host "- Agent address"
+Write-Host "- DID"
+Write-Host "- Canvas ID"
+Write-Host "- X/Y coordinates"
+Write-Host "- Claim date"
+Write-Host ""
+Write-Host "Never share seed phrases, private keys, wallet keys, kms.json, or sensitive identity data."
+Write-Host ""
+
+if (![string]::IsNullOrWhiteSpace($oldHome)) {
+  $env:HOME = $oldHome
 }
+
+exit 0

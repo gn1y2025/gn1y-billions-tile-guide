@@ -4,7 +4,8 @@ Use this only after Windows Agent Doctor says your agent is ready.
 
 Start from:
 
-[../COMMAND_CENTER.md](../COMMAND_CENTER.md)
+- `COMMAND_CENTER.md`
+- `guides/windows-agent-doctor.md`
 
 ---
 
@@ -12,14 +13,15 @@ Start from:
 
 Continue only if all are true:
 
-```text
-agent folder is correct
-verified-agent-identity exists
-scripts/buildX402Payment.js exists
-getIdentities.js works
-DID / identity looks correct
-human link is verified / confirmed
-```
+- agent folder is correct
+- `verified-agent-identity` exists
+- `scripts/buildX402Payment.js` exists
+- `scripts/package.json` exists
+- `scripts/node_modules` exists
+- `getIdentities.js` works
+- DID / identity looks correct
+- human link is verified / confirmed
+- Windows Agent Doctor says `READY TO CLAIM`
 
 Stop if anything is unclear.
 
@@ -29,21 +31,29 @@ Stop if anything is unclear.
 
 Stop immediately if you see:
 
-```text
-10 USDC
-amount=10000000
-amount > 0
-wrong agent
-wrong DID
-wrong human link
-```
+- `10 USDC`
+- `amount=10000000`
+- `amount > 0`
+- `Paid=true`
+- wrong agent
+- wrong DID
+- wrong human link
+- `node.exe Assertion failed`
+- `NativeCommandError`
+- `Cannot find module`
+- `buildX402Payment.js failed`
 
-The free Tile claim must use:
+The free Tile claim must show:
 
-```text
-amount=0
-Paid: false
-```
+- `amount=0`
+- `Paid=false`
+
+Claim success requires both:
+
+- `SUBMIT OK`
+- `Proof saved to:`
+
+If these lines do not appear, the claim is not proven successful.
 
 ---
 
@@ -51,66 +61,81 @@ Paid: false
 
 Use this from the public website.
 
-Before copying commands, check that you are using the official guide website: https://guide-by-gn1y.vercel.app
+Before copying commands, check that you are using the official guide website:
 
-Do not run this command before Doctor says READY TO CLAIM.
+`https://guide-by-gn1y.vercel.app`
+
+Do not run this command before Doctor says `READY TO CLAIM`.
 
 Open PowerShell and paste:
 
-```powershell
-$AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
-if (!(Test-Path $AgentRoot)) {
-  throw "STOP: Agent folder does not exist: $AgentRoot"
-}
+    $AgentRoot = Read-Host "Paste the FULL path to your OpenClaw agent folder"
 
-$ClaimUrl = "https://guide-by-gn1y.vercel.app/scripts/windows-instant-free-claim.ps1"
-$ClaimFile = Join-Path $env:TEMP "gn1y-windows-instant-free-claim.ps1"
+    if (!(Test-Path $AgentRoot)) {
+      throw "STOP: Agent folder does not exist: $AgentRoot"
+    }
 
-Invoke-WebRequest -UseBasicParsing -Uri $ClaimUrl -OutFile $ClaimFile
+    $ClaimUrl = "https://guide-by-gn1y.vercel.app/scripts/windows-instant-free-claim.ps1"
+    $ClaimFile = Join-Path $env:TEMP "gn1y-windows-instant-free-claim.ps1"
 
-Write-Host ""
-Write-Host "Claim script downloaded to:"
-Write-Host $ClaimFile
-Write-Host ""
+    Invoke-WebRequest -UseBasicParsing -Uri $ClaimUrl -OutFile $ClaimFile
 
-notepad $ClaimFile
+    Write-Host ""
+    Write-Host "Claim script downloaded to:"
+    Write-Host $ClaimFile
+    Write-Host ""
 
-Read-Host "Review the script in Notepad. Press Enter to run FREE Tile claim"
+    notepad $ClaimFile
 
-powershell -NoProfile -ExecutionPolicy Bypass -File $ClaimFile -AgentRoot $AgentRoot -Intent "AI agent movie tile claim"
+    Read-Host "Review the script in Notepad. Press Enter to run FREE Tile claim"
 
-if ($?) {
-  Write-Host ""
-  Write-Host "------------------------------------------------------------"
-  Write-Host "Claim command finished without a PowerShell error."
-  Write-Host "If the output above shows Tile claimed / Paid false / amount 0:"
-  Write-Host ""
-  Write-Host "SUCCESS: Free Tile claim flow completed."
-  Write-Host "Community guide by gn1y."
-  Write-Host "Feedback is welcome:"
-  Write-Host "https://github.com/gn1y2025/gn1y-billions-tile-guide"
-  Write-Host "------------------------------------------------------------"
-}
-```
+    powershell -NoProfile -ExecutionPolicy Bypass -File $ClaimFile -AgentRoot $AgentRoot -Intent "AI agent movie tile claim"
+
+    $ClaimExitCode = $LASTEXITCODE
+
+    Write-Host ""
+    Write-Host "Claim script exit code:"
+    Write-Host $ClaimExitCode
+
+    if ($ClaimExitCode -ne 0) {
+      Write-Host ""
+      Write-Host "STOP: Claim script stopped or failed."
+      Write-Host "This is NOT a successful claim."
+      Write-Host "Read the error above and open troubleshooting/claim-errors.md."
+      throw "Claim script failed."
+    }
+
+    Write-Host ""
+    Write-Host "Claim script exited with code 0."
+    Write-Host "Now manually verify the output above contains:"
+    Write-Host "- SUBMIT OK"
+    Write-Host "- Paid=false"
+    Write-Host "- amount=0"
+    Write-Host "- Proof saved to:"
+    Write-Host ""
+    Write-Host "If any of these lines are missing, do NOT treat it as success."
 
 ---
+
 ## After success
 
 Open:
 
-[after-claim-proof.md](./after-claim-proof.md)
+- `guides/after-claim-proof.md`
 
 Save proof.
 
 Optional feedback:
 
-[../templates/feedback-template.md](../templates/feedback-template.md)
+- `templates/feedback-template.md`
 
 ## Final free-claim safety marker
 
 Continue only when the free claim clearly shows:
 
-- amount=0
-- Paid=false
+- `amount=0`
+- `Paid=false`
+- `SUBMIT OK`
+- `Proof saved to:`
 
-Do not run this command before Doctor says READY TO CLAIM.
+Do not run this command before Doctor says `READY TO CLAIM`.

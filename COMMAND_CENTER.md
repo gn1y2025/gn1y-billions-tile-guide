@@ -221,3 +221,22 @@ Expected behavior:
 - Doctor checks only that agent.
 - Doctor does not scan every folder in `D:\agents`.
 - Doctor prints one final result for the selected agent.
+
+## Claim crash / Node error route
+
+If the free claim command shows:
+
+- `node.exe Assertion failed`
+- `NativeCommandError`
+- `Cannot find module`
+- `MODULE_NOT_FOUND`
+- no `SUBMIT OK`
+- no `Proof saved to:`
+
+then the claim is not successful.
+
+Open:
+
+    troubleshooting/claim-errors.md
+
+Do not treat PowerShell finishing as success unless the claim script printed `SUBMIT OK` and `Proof saved to:`.
