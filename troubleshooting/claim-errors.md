@@ -154,3 +154,30 @@ If `claim_id` is missing, stop.
 If submit fails, stop.
 
 Do not treat Phase1 JSON as a claimed Tile.
+
+## Case: paymentRequiredFilePath not found
+
+Symptoms:
+
+- Phase1 shows a valid JSON response.
+- You can see `amount=0`.
+- You can see `paymentRequiredFilePath` in the terminal.
+- The script still stops with `paymentRequiredFilePath not found`.
+
+Meaning:
+
+The parser failed to extract the temp payment requirements file path from Phase1.
+
+The safe script must stop before Phase2 if it cannot resolve this file path.
+
+Fix:
+
+Update to the latest `windows-instant-free-claim.ps1` from the guide website and run the claim command again.
+
+Expected behavior after the fix:
+
+- script prints `paymentRequiredFilePath resolved:`
+- script checks that the local temp JSON file exists
+- script continues to Phase2 only after that
+
+Do not manually copy old claim data. Run a fresh flow.

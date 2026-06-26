@@ -380,6 +380,72 @@ $free = $freeCandidates[0]
 $freeAmount = Get-PropValue -Object $free -Names @("amount", "maxAmountRequired", "value")
 $freePaymentHash = Get-PropValue -Object $free -Names @("paymentHash", "hash")
 
+# GN1Y_FREE_PAYMENT_HASH_FINAL_FIX
+# Prefer the free payment option from data.paymentOptions when available.
+# GN1Y_PAYMENT_REQUIRED_FILE_FINAL_FIX
+# The Billions x402 Phase1 response normally stores this at data.paymentRequiredFilePath.
+# Older parser logic may miss it because paymentOptions and paymentRequiredFilePath live at different levels.
+if (!$paymentRequiredFilePath) {
+  try {
+    if ($phase1.PSObject.Properties["data"]) {
+      $directPath = Get-PropValue -Object $phase1.data -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
+
+      if ($directPath) {
+        $paymentRequiredFilePath = $directPath
+      }
+    }
+  } catch {}
+}
+
+if (!$paymentRequiredFilePath) {
+  try {
+    $rootPath = Get-PropValue -Object $phase1 -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
+
+    if ($rootPath) {
+      $paymentRequiredFilePath = $rootPath
+    }
+  } catch {}
+}
+
+if (!$paymentRequiredFilePath) {
+  $pathMatch = [regex]::Match($phase1Text, '"paymentRequiredFilePath"\s*:\s*"([^"]+)"')
+
+  if (!$pathMatch.Success) {
+    $pathMatch = [regex]::Match($phase1Text, '"paymentRequirementsFilePath"\s*:\s*"([^"]+)"')
+  }
+
+  if (!$pathMatch.Success) {
+    $pathMatch = [regex]::Match($phase1Text, '"paymentFilePath"\s*:\s*"([^"]+)"')
+  }
+
+  if ($pathMatch.Success) {
+    $paymentRequiredFilePath = $pathMatch.Groups[1].Value
+    $paymentRequiredFilePath = $paymentRequiredFilePath.Replace('\\','\')
+    $paymentRequiredFilePath = $paymentRequiredFilePath.Replace('\/','/')
+  }
+}
+
+if ($paymentRequiredFilePath) {
+  $paymentRequiredFilePath = [Environment]::ExpandEnvironmentVariables("$paymentRequiredFilePath").Trim('"')
+  Write-Host "paymentRequiredFilePath resolved:"
+  Write-Host $paymentRequiredFilePath
+}
+if (!$freePaymentHash) {
+  try {
+    if ($phase1.PSObject.Properties["data"] -and $phase1.data.PSObject.Properties["paymentOptions"]) {
+      foreach ($opt in @($phase1.data.paymentOptions)) {
+        $optAmount = Get-PropValue -Object $opt -Names @("amount", "maxAmountRequired", "value")
+        $optHash = Get-PropValue -Object $opt -Names @("paymentHash", "hash")
+
+        if ("$optAmount" -eq "0" -and $optHash) {
+          $freePaymentHash = $optHash
+          break
+        }
+      }
+    }
+  } catch {}
+}
+
 if ("$freeAmount" -ne "0") {
   Stop-Guide "Selected option is not free. Amount: $freeAmount"
 }
@@ -398,6 +464,54 @@ if ($paymentRequiredFileObjects.Count -gt 0) {
   $paymentRequiredFilePath = Get-PropValue -Object $paymentRequiredFileObjects[0] -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
 }
 
+# GN1Y_PAYMENT_REQUIRED_FILE_FINAL_FIX
+# The Billions x402 Phase1 response normally stores this at data.paymentRequiredFilePath.
+# Older parser logic may miss it because paymentOptions and paymentRequiredFilePath live at different levels.
+if (!$paymentRequiredFilePath) {
+  try {
+    if ($phase1.PSObject.Properties["data"]) {
+      $directPath = Get-PropValue -Object $phase1.data -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
+
+      if ($directPath) {
+        $paymentRequiredFilePath = $directPath
+      }
+    }
+  } catch {}
+}
+
+if (!$paymentRequiredFilePath) {
+  try {
+    $rootPath = Get-PropValue -Object $phase1 -Names @("paymentRequiredFilePath", "paymentRequirementsFilePath", "paymentFilePath")
+
+    if ($rootPath) {
+      $paymentRequiredFilePath = $rootPath
+    }
+  } catch {}
+}
+
+if (!$paymentRequiredFilePath) {
+  $pathMatch = [regex]::Match($phase1Text, '"paymentRequiredFilePath"\s*:\s*"([^"]+)"')
+
+  if (!$pathMatch.Success) {
+    $pathMatch = [regex]::Match($phase1Text, '"paymentRequirementsFilePath"\s*:\s*"([^"]+)"')
+  }
+
+  if (!$pathMatch.Success) {
+    $pathMatch = [regex]::Match($phase1Text, '"paymentFilePath"\s*:\s*"([^"]+)"')
+  }
+
+  if ($pathMatch.Success) {
+    $paymentRequiredFilePath = $pathMatch.Groups[1].Value
+    $paymentRequiredFilePath = $paymentRequiredFilePath.Replace('\\','\')
+    $paymentRequiredFilePath = $paymentRequiredFilePath.Replace('\/','/')
+  }
+}
+
+if ($paymentRequiredFilePath) {
+  $paymentRequiredFilePath = [Environment]::ExpandEnvironmentVariables("$paymentRequiredFilePath").Trim('"')
+  Write-Host "paymentRequiredFilePath resolved:"
+  Write-Host $paymentRequiredFilePath
+}
 if (!$freePaymentHash) {
   Write-Host $phase1Text
   Stop-Guide "Free paymentHash not found."
@@ -408,7 +522,7 @@ if (!$paymentRequiredFilePath) {
   Stop-Guide "paymentRequiredFilePath not found."
 }
 
-if (!(Test-Path $paymentRequiredFilePath)) {
+if (!(Test-Path -LiteralPath $paymentRequiredFilePath)) {
   Stop-Guide "paymentRequiredFilePath does not exist on disk: $paymentRequiredFilePath"
 }
 

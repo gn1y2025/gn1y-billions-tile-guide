@@ -257,3 +257,17 @@ Never treat this as success unless the final output prints:
 If the script stops, open:
 
     troubleshooting/claim-errors.md
+
+## Phase1 paymentRequiredFilePath route
+
+If Phase1 shows `amount=0` but the script stops at:
+
+    paymentRequiredFilePath not found
+
+open:
+
+    troubleshooting/claim-errors.md
+
+Then use the latest claim script from the live guide website.
+
+Do not manually reuse old Phase1 data. Run a fresh claim flow.

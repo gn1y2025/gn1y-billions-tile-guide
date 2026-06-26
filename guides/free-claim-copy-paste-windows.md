@@ -165,3 +165,16 @@ Continue only when the free claim clearly shows:
 - `Proof saved to:`
 
 Do not run this command before Doctor says `READY TO CLAIM`.
+
+## Phase1 file path parsing note
+
+The x402 Phase1 response must include a local `paymentRequiredFilePath`.
+
+Expected safe Phase1 markers:
+
+- free option exists with `amount=0`
+- paid option may also exist with `amount=10000000`
+- `paymentRequiredFilePath` is found
+- the local temp JSON file exists on disk
+
+If `paymentRequiredFilePath` is missing or the file does not exist, stop. The script must not continue to Phase2.
