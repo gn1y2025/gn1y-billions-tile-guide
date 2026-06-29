@@ -210,3 +210,43 @@ Success requires all of these final markers:
 If Phase2 created a `claim_id` but there is no `SUBMIT OK`, do not retry blindly. Open `troubleshooting/claim-errors.md`.
 
 For a real claim test, use only the latest live script from the guide website.
+
+## If you see maxExceeded / Payment has exceeded
+
+If the claim script shows:
+
+```text
+maxExceeded=true
+Payment has exceeded its maximum allowed uses
+```
+
+or any message that contains:
+
+```text
+Payment has exceeded
+```
+
+stop immediately.
+
+This is not a successful free Tile claim.
+
+It usually means the free allowance for this human / identity / payment / resource is already unavailable or was consumed by an earlier Phase2 attempt.
+
+Do not switch to paid.
+
+Do not retry blindly.
+
+Do not manually change the payment amount.
+
+This guide is free only unless you intentionally choose a paid Tile flow from the paid section.
+
+A successful free claim requires all final markers:
+
+```text
+SUBMIT OK
+Paid=false
+amount=0
+Proof saved to:
+```
+
+If any of these markers are missing, do not treat the claim as successful.

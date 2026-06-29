@@ -326,3 +326,26 @@ Recommended Windows command: safe skill update + identity restore
 ```
 
 Do not claim until Doctor says READY TO CLAIM.
+
+## Existing agent route
+
+Use this route if you already have an existing agent and you only want to check whether it is ready for the free Tile claim.
+
+For an existing agent:
+
+1. Run Windows Agent Doctor for that exact agent folder.
+2. If Doctor says the skill is old or not x402-ready, update the skill with identity restore.
+3. If Doctor says `No identities found`, restore the same agent identity first.
+4. Claim only when Doctor says READY TO CLAIM.
+5. Treat success only as:
+
+```text
+SUBMIT OK
+Paid=false
+amount=0
+Proof saved to:
+```
+
+If you see `maxExceeded=true` or `Payment has exceeded`, stop.
+
+Do not switch to paid.
