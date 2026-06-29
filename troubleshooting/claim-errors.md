@@ -268,3 +268,40 @@ Do not manually reuse old claim data.
 Do not repeatedly test Phase2 on the same real eligible agent.
 
 Use the latest live claim script and a different eligible agent.
+
+## Case: identity missing after skill update
+
+Symptoms:
+
+- `buildX402Payment.js` exists.
+- `npm install` completed.
+- Doctor says `No identities found`.
+- The agent was linked before the skill update.
+
+Meaning:
+
+The skill was updated, but the old identity files were stored in a legacy location and were not restored into stable HOME storage.
+
+Old legacy storage can look like:
+
+```text
+scripts/undefined/.openclaw/billions/defaultDid.json
+scripts/undefined/.openclaw/billions/identities.json
+scripts/undefined/.openclaw/billions/kms.json
+```
+
+Stable storage should be:
+
+```text
+<agent>/openclaw-home/.openclaw/billions
+```
+
+Fix:
+
+Use `guides/update-identity-skill.md` and run the recommended command:
+
+```text
+Recommended Windows command: safe skill update + identity restore
+```
+
+Do not claim until Doctor sees the DID and says READY TO CLAIM.

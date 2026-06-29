@@ -304,3 +304,25 @@ Open:
     troubleshooting/claim-errors.md
 
 For the next test, use a different eligible agent and only the latest live claim script.
+
+## Skill update with identity restore route
+
+If an agent already has `verified-agent-identity`, but after updating the skill Doctor says:
+
+```text
+No identities found
+```
+
+open:
+
+```text
+guides/update-identity-skill.md
+```
+
+Use:
+
+```text
+Recommended Windows command: safe skill update + identity restore
+```
+
+Do not claim until Doctor says READY TO CLAIM.
