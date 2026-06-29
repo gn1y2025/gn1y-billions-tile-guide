@@ -285,3 +285,22 @@ open:
 Then use the latest live claim script and run a fresh claim flow.
 
 Do not reuse old Phase1 or Phase2 data.
+
+## Phase2 consumed free allowance route
+
+If an agent shows `claim_id` in old Phase2 logs but no `SUBMIT OK`, no proof, and no NFT, its free allowance may be consumed.
+
+If later attempts return:
+
+    maxExceeded=true
+    Payment has exceeded its maximum allowed uses
+
+stop that agent.
+
+Do not retry blindly.
+
+Open:
+
+    troubleshooting/claim-errors.md
+
+For the next test, use a different eligible agent and only the latest live claim script.

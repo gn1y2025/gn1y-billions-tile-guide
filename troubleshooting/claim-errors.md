@@ -210,3 +210,61 @@ Success still requires:
 - `Paid=false`
 - `amount=0`
 - `Proof saved to:`
+
+## Case: maxExceeded=true / Payment has exceeded maximum allowed uses
+
+Symptoms:
+
+- Phase1 works.
+- Free option exists with `amount=0`.
+- Phase2 returns:
+  - `maxExceeded: true`
+  - `Payment has exceeded its maximum allowed uses`
+  - HTTP `402 Payment Required`
+
+Meaning:
+
+The agent and identity may be working, but the free allowance for this payment/human/identity/resource is no longer available.
+
+This can happen even if no NFT appears, especially if an earlier Phase2 run created a `claim_id` but failed before final submit.
+
+Do not switch to paid.
+
+Do not retry blindly.
+
+Do not treat this as success.
+
+Success still requires:
+
+- `SUBMIT OK`
+- `Paid=false`
+- `amount=0`
+- `Proof saved to:`
+
+Next:
+
+- Stop this agent.
+- Check old logs for `claim_id`.
+- Use a different eligible agent only with the latest live guide script.
+
+## Case: Phase2 created claim_id but no NFT appeared
+
+Symptoms:
+
+- Phase2 output contains `claim_id` / `clm_...`.
+- There is no `SUBMIT OK`.
+- There is no `Proof saved to:`.
+- There is no `tile_id`.
+- Later attempts return `maxExceeded=true`.
+
+Meaning:
+
+The script may have created or consumed a fresh claim, but failed before final Tile submit.
+
+This may consume the free allowance without minting a Tile NFT.
+
+Do not manually reuse old claim data.
+
+Do not repeatedly test Phase2 on the same real eligible agent.
+
+Use the latest live claim script and a different eligible agent.

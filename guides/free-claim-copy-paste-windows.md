@@ -193,3 +193,20 @@ Expected safe Phase2 markers:
 If Phase2 JSON contains null fields, the parser must skip them safely.
 
 If `claim_id` is missing, stop. Do not manually reuse old Phase1 or Phase2 data.
+
+## Critical warning: Phase2 may consume the free allowance
+
+Do not repeatedly test Phase2 on a real eligible agent.
+
+If Phase2 creates a fresh `claim_id` but the script fails before final submit, the free allowance may still become consumed even if no NFT appears.
+
+Success requires all of these final markers:
+
+- `SUBMIT OK`
+- `Paid=false`
+- `amount=0`
+- `Proof saved to:`
+
+If Phase2 created a `claim_id` but there is no `SUBMIT OK`, do not retry blindly. Open `troubleshooting/claim-errors.md`.
+
+For a real claim test, use only the latest live script from the guide website.
