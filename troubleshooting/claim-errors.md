@@ -181,3 +181,32 @@ Expected behavior after the fix:
 - script continues to Phase2 only after that
 
 Do not manually copy old claim data. Run a fresh flow.
+
+## Case: Cannot bind argument to parameter Node because it is null
+
+Symptoms:
+
+- Phase1 works
+- `paymentRequiredFilePath resolved` appears
+- free option shows `amount=0`
+- Phase2 starts
+- PowerShell stops with:
+  - `Find-ObjectsRecursive`
+  - `Cannot bind argument to parameter 'Node' because it is null`
+
+Meaning:
+
+The Phase2 JSON contains a null field and the old parser did not skip null values.
+
+Fix:
+
+Update to the latest `windows-instant-free-claim.ps1` from the live guide website and run a fresh claim flow.
+
+Do not manually reuse old claim data.
+
+Success still requires:
+
+- `SUBMIT OK`
+- `Paid=false`
+- `amount=0`
+- `Proof saved to:`

@@ -271,3 +271,17 @@ open:
 Then use the latest claim script from the live guide website.
 
 Do not manually reuse old Phase1 data. Run a fresh claim flow.
+
+## Phase2 null parser route
+
+If Phase2 starts but the script stops with:
+
+    Cannot bind argument to parameter 'Node' because it is null
+
+open:
+
+    troubleshooting/claim-errors.md
+
+Then use the latest live claim script and run a fresh claim flow.
+
+Do not reuse old Phase1 or Phase2 data.

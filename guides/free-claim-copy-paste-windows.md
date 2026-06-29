@@ -178,3 +178,18 @@ Expected safe Phase1 markers:
 - the local temp JSON file exists on disk
 
 If `paymentRequiredFilePath` is missing or the file does not exist, stop. The script must not continue to Phase2.
+
+## Phase2 claim_id parsing note
+
+After Phase2, the script must find a fresh `claim_id`.
+
+Expected safe Phase2 markers:
+
+- Phase2 JSON is valid
+- fresh `claim_id` exists
+- claim is not expired
+- final submit happens immediately after this
+
+If Phase2 JSON contains null fields, the parser must skip them safely.
+
+If `claim_id` is missing, stop. Do not manually reuse old Phase1 or Phase2 data.

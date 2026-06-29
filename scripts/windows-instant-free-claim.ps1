@@ -51,7 +51,7 @@ function ConvertFrom-MixedJsonText {
 
 function Find-ObjectsRecursive {
   param(
-    [Parameter(Mandatory=$true)]$Node,
+    $Node,
     [Parameter(Mandatory=$true)][scriptblock]$Predicate
   )
 
@@ -69,11 +69,15 @@ function Find-ObjectsRecursive {
 
   if ($Node -is [System.Collections.IEnumerable] -and -not ($Node -is [string])) {
     foreach ($item in $Node) {
-      $results += Find-ObjectsRecursive -Node $item -Predicate $Predicate
+      if ($null -ne $item) {
+        $results += Find-ObjectsRecursive -Node $item -Predicate $Predicate
+      }
     }
   } elseif ($Node.PSObject -and $Node.PSObject.Properties) {
     foreach ($prop in $Node.PSObject.Properties) {
-      $results += Find-ObjectsRecursive -Node $prop.Value -Predicate $Predicate
+      if ($null -ne $prop.Value) {
+        $results += Find-ObjectsRecursive -Node $prop.Value -Predicate $Predicate
+      }
     }
   }
 
@@ -551,6 +555,48 @@ if ($null -eq $phase2) {
 
 $claimId = $null
 $expiresAt = $null
+
+# GN1Y_PHASE2_CLAIM_ID_DIRECT_FIX
+# Try direct common locations first before recursive search.
+try {
+  $phase2DirectCandidates = @()
+
+  if ($phase2.PSObject.Properties["claim_id"] -or $phase2.PSObject.Properties["claimId"] -or $phase2.PSObject.Properties["id"]) {
+    $phase2DirectCandidates += $phase2
+  }
+
+  if ($phase2.PSObject.Properties["data"]) {
+    $phase2DirectCandidates += $phase2.data
+
+    if ($phase2.data.PSObject.Properties["claim"]) {
+      $phase2DirectCandidates += $phase2.data.claim
+    }
+
+    if ($phase2.data.PSObject.Properties["result"]) {
+      $phase2DirectCandidates += $phase2.data.result
+    }
+
+    if ($phase2.data.PSObject.Properties["payment"]) {
+      $phase2DirectCandidates += $phase2.data.payment
+    }
+  }
+
+  foreach ($candidate in $phase2DirectCandidates) {
+    if ($null -eq $candidate) {
+      continue
+    }
+
+    $directClaim = Get-PropValue -Object $candidate -Names @("claim_id", "claimId", "id")
+    $directExpires = Get-PropValue -Object $candidate -Names @("expires_at", "expiresAt", "expires")
+
+    if ($directClaim -and "$directClaim" -match "^clm_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$") {
+      $claimId = $directClaim
+      $expiresAt = $directExpires
+      break
+    }
+  }
+} catch {}
+
 
 $claimObjects = Find-ObjectsRecursive -Node $phase2 -Predicate {
   param($o)
